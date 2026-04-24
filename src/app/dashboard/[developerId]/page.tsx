@@ -50,181 +50,173 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
   if (loading || !metrics || !insights) return <LoadingSkeleton />;
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+    <div className="flex min-h-screen bg-[var(--bg-primary)]">
       <Sidebar developers={developers} activeDeveloperId={developerId} />
 
-      <main style={{ marginLeft: 260, flex: 1, padding: "40px", maxWidth: "calc(100vw - 260px)" }}>
-        {/* Page Header (Top Bar substitute) */}
-        <div style={{ marginBottom: 40, paddingBottom: 24, borderBottom: "1px solid var(--border-default)" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <div style={{
-                width: 56, height: 56, borderRadius: 12,
-                background: "var(--bg-tertiary)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 20, fontWeight: 600, color: "var(--text-primary)",
-              }}>
-                {developer?.avatar}
-              </div>
-              <div>
-                <h1 style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px" }}>
-                  {developer?.name}
-                </h1>
-                <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 6 }}>
-                  <span style={{ fontSize: 14, color: "var(--text-secondary)" }}>{developer?.role}</span>
-                  <span style={{ color: "var(--border-light)" }}>|</span>
-                  <span style={{ fontSize: 14, color: "var(--text-secondary)" }}>{developer?.team_name} Team</span>
+      <main className="flex-1 w-full md:ml-64 pt-16 md:pt-0">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+          
+          {/* Page Header */}
+          <div className="mb-8 pb-6 border-b border-[var(--border-default)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-[var(--bg-tertiary)] flex items-center justify-center text-xl font-semibold text-[var(--text-primary)] shrink-0">
+                  {developer?.avatar}
                 </div>
-              </div>
-            </div>
-            <div style={{
-              display: "flex", alignItems: "center", gap: 8,
-              padding: "8px 16px", borderRadius: 8, fontSize: 13, fontWeight: 500,
-              background: "var(--bg-secondary)", color: "var(--text-secondary)",
-              border: "1px solid var(--border-default)",
-            }}>
-              <RefreshCw size={14} />
-              Synced Just Now
-            </div>
-          </div>
-        </div>
-
-        {/* ── INSIGHTS (primary) ──────────────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <div style={{ marginBottom: 24 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>Active Insights</h2>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {insights.map((insight, i) => (
-              <InsightCard key={insight.id} insight={insight} developerId={developerId} index={i} />
-            ))}
-          </div>
-        </section>
-
-        {/* ── METRICS GRID (secondary) ──────────────────────── */}
-        <section style={{ marginBottom: 48 }}>
-          <div style={{ marginBottom: 24 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>Metrics Overview</h2>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 16 }}>
-            <MetricCard
-              label="Lead Time"
-              value={metrics?.leadTime ?? 0}
-              unit="h"
-              delta={getDelta("lead")?.delta}
-              deltaUnit="h"
-              lowerIsBetter
-              icon={<Clock size={16} />}
-              subtitle={`Team avg: ${teamAverages.leadTime}h`}
-            />
-            <MetricCard
-              label="Cycle Time"
-              value={metrics?.cycleTime ?? 0}
-              unit="h"
-              delta={getDelta("cycle")?.delta}
-              deltaUnit="h"
-              lowerIsBetter
-              icon={<Timer size={16} />}
-              subtitle={`Team avg: ${teamAverages.cycleTime}h`}
-            />
-            <MetricCard
-              label="PR Throughput"
-              value={metrics?.prThroughput ?? 0}
-              unit="PRs"
-              delta={getDelta("throughput")?.delta}
-              deltaUnit=""
-              lowerIsBetter={false}
-              icon={<GitPullRequest size={16} />}
-              subtitle={`Team avg: ${teamAverages.prThroughput}`}
-            />
-            <MetricCard
-              label="Deploy Freq."
-              value={metrics?.deployFrequency ?? 0}
-              unit="/30d"
-              delta={getDelta("deploy")?.delta}
-              deltaUnit=""
-              lowerIsBetter={false}
-              icon={<Rocket size={16} />}
-              subtitle={`${metrics?.failedDeploys ?? 0} failed deploys`}
-            />
-            <MetricCard
-              label="Bug Rate"
-              value={metrics?.bugRate ?? 0}
-              unit="%"
-              delta={getDelta("bug")?.delta}
-              deltaUnit="%"
-              lowerIsBetter
-              icon={<Bug size={16} />}
-              subtitle={`${metrics?.escapedBugs ?? 0} escaped bugs`}
-            />
-          </div>
-
-          {/* Secondary stats row */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 16 }}>
-            {[
-              { label: "Total Issues Closed",  value: metrics?.totalIssues,         icon: <CheckCircle2 size={16} /> },
-              { label: "Avg PR Size",           value: metrics?.avgPRSize,           icon: <Layers size={16} /> },
-              { label: "Avg Time to Review",    value: `${metrics?.avgReviewWait}h`, icon: <AlertCircle size={16} /> },
-            ].map((stat) => (
-              <div key={stat.label} className="premium-card" style={{ padding: "20px", display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{
-                  width: 40, height: 40, borderRadius: 8,
-                  background: "var(--bg-tertiary)", color: "var(--text-muted)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  {stat.icon}
-                </div>
-                <div>
-                  <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 4 }}>
-                    {stat.label}
-                  </div>
-                  <div className="font-mono" style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>
-                    {stat.value}
+                <div className="min-w-0">
+                  <h1 className="text-2xl font-semibold text-[var(--text-primary)] tracking-tight truncate">
+                    {developer?.name}
+                  </h1>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 items-center mt-1 text-sm text-[var(--text-secondary)]">
+                    <span className="truncate">{developer?.role}</span>
+                    <span className="text-[var(--border-light)] hidden sm:inline">|</span>
+                    <span className="truncate">{developer?.team_name} Team</span>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── RECOMMENDATIONS ──────────────────────────────────── */}
-        {recommendations.length > 0 && (
-          <section>
-            <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ padding: 6, background: "var(--bg-tertiary)", borderRadius: 6, color: "var(--accent-primary)" }}>
-                <Target size={20} />
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-default)] w-fit">
+                <RefreshCw size={14} />
+                Synced Just Now
               </div>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>Recommendations</h2>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
-              {recommendations.map((rec) => (
-                <div key={rec.id} className="premium-card" style={{ padding: 24 }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
-                    <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>{rec.title}</h3>
-                    <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-                      <span className={`badge-${rec.impact === 'high' ? 'danger' : rec.impact === 'medium' ? 'warning' : 'success'}`} style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>
-                        Impact: {rec.impact}
-                      </span>
-                      <span className="badge-neutral" style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>
-                        Effort: {rec.effort}
-                      </span>
-                    </div>
-                  </div>
-                  <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 20 }}>{rec.rationale}</p>
-                  <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
-                    {rec.actions.map((action, ai) => (
-                      <li key={ai} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                        <ArrowRight size={16} color="var(--text-muted)" style={{ marginTop: 2, flexShrink: 0 }} />
-                        <span style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.5 }}>{action}</span>
-                      </li>
-                    ))}
-                  </ul>
+          </div>
+
+          {/* ── INSIGHTS (primary) ──────────────────────────────── */}
+          <section className="mb-10">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-[var(--text-primary)]">Active Insights</h2>
+            </div>
+            <div className="flex flex-col gap-4">
+              {insights.map((insight, i) => (
+                <div key={insight.id} className="w-full min-w-0">
+                  <InsightCard insight={insight} developerId={developerId} index={i} />
                 </div>
               ))}
             </div>
           </section>
-        )}
+
+          {/* ── METRICS GRID (secondary) ──────────────────────── */}
+          <section className="mb-10">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-[var(--text-primary)]">Metrics Overview</h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <MetricCard
+                label="Lead Time"
+                value={metrics?.leadTime ?? 0}
+                unit="h"
+                delta={getDelta("lead")?.delta}
+                deltaUnit="h"
+                lowerIsBetter
+                icon={<Clock size={16} />}
+                subtitle={`Team avg: ${teamAverages.leadTime}h`}
+              />
+              <MetricCard
+                label="Cycle Time"
+                value={metrics?.cycleTime ?? 0}
+                unit="h"
+                delta={getDelta("cycle")?.delta}
+                deltaUnit="h"
+                lowerIsBetter
+                icon={<Timer size={16} />}
+                subtitle={`Team avg: ${teamAverages.cycleTime}h`}
+              />
+              <MetricCard
+                label="PR Throughput"
+                value={metrics?.prThroughput ?? 0}
+                unit="PRs"
+                delta={getDelta("throughput")?.delta}
+                deltaUnit=""
+                lowerIsBetter={false}
+                icon={<GitPullRequest size={16} />}
+                subtitle={`Team avg: ${teamAverages.prThroughput}`}
+              />
+              <MetricCard
+                label="Deploy Freq."
+                value={metrics?.deployFrequency ?? 0}
+                unit="/30d"
+                delta={getDelta("deploy")?.delta}
+                deltaUnit=""
+                lowerIsBetter={false}
+                icon={<Rocket size={16} />}
+                subtitle={`${metrics?.failedDeploys ?? 0} failed deploys`}
+              />
+              <MetricCard
+                label="Bug Rate"
+                value={metrics?.bugRate ?? 0}
+                unit="%"
+                delta={getDelta("bug")?.delta}
+                deltaUnit="%"
+                lowerIsBetter
+                icon={<Bug size={16} />}
+                subtitle={`${metrics?.escapedBugs ?? 0} escaped bugs`}
+              />
+            </div>
+
+            {/* Secondary stats row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+              {[
+                { label: "Total Issues Closed",  value: metrics?.totalIssues,         icon: <CheckCircle2 size={16} /> },
+                { label: "Avg PR Size",           value: metrics?.avgPRSize,           icon: <Layers size={16} /> },
+                { label: "Avg Time to Review",    value: `${metrics?.avgReviewWait}h`, icon: <AlertCircle size={16} /> },
+              ].map((stat) => (
+                <div key={stat.label} className="premium-card p-5 flex items-center gap-4 w-full min-w-0">
+                  <div className="w-10 h-10 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-muted)] flex items-center justify-center shrink-0">
+                    {stat.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm text-[var(--text-secondary)] font-medium mb-1 truncate">
+                      {stat.label}
+                    </div>
+                    <div className="font-mono text-xl font-semibold text-[var(--text-primary)] truncate">
+                      {stat.value}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ── RECOMMENDATIONS ──────────────────────────────────── */}
+          {recommendations.length > 0 && (
+            <section className="mb-10">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="p-1.5 bg-[var(--bg-tertiary)] rounded-md text-[var(--accent-primary)] shrink-0">
+                  <Target size={20} />
+                </div>
+                <h2 className="text-xl font-semibold text-[var(--text-primary)] truncate">Recommendations</h2>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {recommendations.map((rec) => (
+                  <div key={rec.id} className="premium-card p-6 w-full min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                      <h3 className="text-base font-semibold text-[var(--text-primary)] break-words">{rec.title}</h3>
+                      <div className="flex gap-2 shrink-0">
+                        <span className={`px-2.5 py-1 rounded-md text-xs font-medium badge-${rec.impact === 'high' ? 'danger' : rec.impact === 'medium' ? 'warning' : 'success'}`}>
+                          Impact: {rec.impact}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md text-xs font-medium badge-neutral border border-[var(--border-light)]">
+                          Effort: {rec.effort}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">{rec.rationale}</p>
+                    <ul className="flex flex-col gap-3 list-none">
+                      {rec.actions.map((action, ai) => (
+                        <li key={ai} className="flex items-start gap-3">
+                          <ArrowRight size={16} className="text-[var(--text-muted)] mt-0.5 shrink-0" />
+                          <span className="text-sm text-[var(--text-primary)] leading-relaxed">{action}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+        </div>
       </main>
     </div>
   );
@@ -232,13 +224,15 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
 
 function LoadingSkeleton() {
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
-      <div style={{ width: 260, background: "var(--bg-secondary)", borderRight: "1px solid var(--border-default)" }} />
-      <main style={{ marginLeft: 260, flex: 1, padding: "40px" }}>
-        <div style={{ height: 60, width: 300, background: "var(--bg-tertiary)", borderRadius: 8, marginBottom: 40 }} />
-        {[1, 2].map(i => <div key={i} style={{ height: 180, background: "var(--bg-tertiary)", marginBottom: 16, borderRadius: 16 }} />)}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 16, marginTop: 32 }}>
-          {[1,2,3,4,5].map(i => <div key={i} style={{ height: 110, background: "var(--bg-tertiary)", borderRadius: 16 }} />)}
+    <div className="flex min-h-screen bg-[var(--bg-primary)]">
+      <div className="hidden md:block w-64 bg-[var(--bg-secondary)] border-r border-[var(--border-default)]" />
+      <main className="flex-1 w-full md:ml-64 pt-16 md:pt-0">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+          <div className="h-14 w-64 bg-[var(--bg-tertiary)] rounded-lg mb-10" />
+          {[1, 2].map(i => <div key={i} className="h-48 bg-[var(--bg-tertiary)] mb-4 rounded-2xl w-full" />)}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8">
+            {[1,2,3,4,5].map(i => <div key={i} className="h-28 bg-[var(--bg-tertiary)] rounded-2xl w-full" />)}
+          </div>
         </div>
       </main>
     </div>

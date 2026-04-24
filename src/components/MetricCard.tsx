@@ -22,53 +22,47 @@ export default function MetricCard({
   const isNeutral = delta === undefined || Math.abs(delta) < 0.5;
 
   return (
-    <div className="premium-card" style={{ padding: "24px" }}>
+    <div className="premium-card p-6 w-full min-w-0 flex flex-col justify-between">
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <span style={{ fontSize: 14, fontWeight: 500, color: "var(--text-secondary)" }}>
+      <div className="flex items-center justify-between mb-3 gap-2">
+        <span className="text-sm font-medium text-[var(--text-secondary)] truncate">
           {label}
         </span>
         {icon && (
-          <div style={{ color: "var(--text-muted)" }}>
+          <div className="text-[var(--text-muted)] shrink-0">
             {icon}
           </div>
         )}
       </div>
 
       {/* Value */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 12 }}>
-        <span style={{ fontSize: 32, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px" }}>
+      <div className="flex items-baseline gap-1 mb-3 truncate">
+        <span className="text-3xl font-semibold text-[var(--text-primary)] tracking-tight truncate">
           {value}
         </span>
         {unit && (
-          <span style={{ fontSize: 14, color: "var(--text-muted)", fontWeight: 500 }}>{unit}</span>
+          <span className="text-sm font-medium text-[var(--text-muted)] shrink-0">{unit}</span>
         )}
       </div>
 
       {/* Delta */}
-      {delta !== undefined && !isNeutral && (
-        <div style={{
-          display: "inline-flex", alignItems: "center", gap: 6,
-          padding: "4px 8px", borderRadius: 6, fontSize: 13, fontWeight: 500,
-          background: isPositive ? "var(--semantic-success-bg)" : "var(--semantic-danger-bg)",
-          color: isPositive ? "var(--semantic-success)" : "var(--semantic-danger)",
-        }}>
-          {isPositive ? <TrendingDown size={14} /> : <TrendingUp size={14} />}
-          {Math.abs(delta).toFixed(1)}{deltaUnit} vs prev
-        </div>
-      )}
-      {isNeutral && delta !== undefined && (
-        <div style={{
-          display: "inline-flex", alignItems: "center", gap: 6,
-          padding: "4px 8px", borderRadius: 6, fontSize: 13, fontWeight: 500,
-          background: "var(--bg-tertiary)", color: "var(--text-secondary)",
-        }}>
-          <Minus size={14} /> Stable
-        </div>
-      )}
+      <div className="flex items-center flex-wrap gap-2">
+        {delta !== undefined && !isNeutral && (
+          <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium shrink-0 ${isPositive ? 'bg-[var(--semantic-success-bg)] text-[var(--semantic-success)]' : 'bg-[var(--semantic-danger-bg)] text-[var(--semantic-danger)]'}`}>
+            {isPositive ? <TrendingDown size={14} /> : <TrendingUp size={14} />}
+            <span className="truncate">{Math.abs(delta).toFixed(1)}{deltaUnit} vs prev</span>
+          </div>
+        )}
+        {isNeutral && delta !== undefined && (
+          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium shrink-0 bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+            <Minus size={14} /> 
+            <span>Stable</span>
+          </div>
+        )}
+      </div>
 
       {subtitle && (
-        <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 12 }}>{subtitle}</div>
+        <div className="text-xs text-[var(--text-muted)] mt-3 truncate">{subtitle}</div>
       )}
     </div>
   );

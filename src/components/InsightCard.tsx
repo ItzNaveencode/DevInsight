@@ -24,48 +24,62 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
   const isHero = index === 0;
 
   return (
-    <div className={`w-full min-w-0 p-6 md:p-[24px] flex flex-col ${isHero ? "hero-insight-card" : "premium-card"}`}>
+    <div
+      className={isHero ? "hero-insight-card" : "premium-card"}
+      style={{
+        padding: 24,
+      }}
+    >
       {/* Header row */}
-      <div className="flex flex-col sm:flex-row sm:items-start gap-4 md:gap-[16px] mb-4 md:mb-[16px]">
-        <div className="w-11 h-11 md:w-[44px] md:h-[44px] rounded-xl flex-shrink-0 bg-[var(--bg-tertiary)] flex items-center justify-center" style={{ color: cfg.color }}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
+        <div style={{
+          width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+          background: "var(--bg-tertiary)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          color: cfg.color
+        }}>
           <Icon size={20} />
         </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1.5 md:mb-[6px] flex-wrap">
-            <span className="text-[13px] font-medium text-[var(--text-muted)] uppercase tracking-[0.05em]">
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
               Insight
             </span>
           </div>
-          <h3 className="text-[18px] font-semibold text-[var(--text-primary)] leading-[1.4] break-words">
+          <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.4 }}>
             {insight.title}
           </h3>
         </div>
       </div>
 
       {/* Description */}
-      <p className="text-[14px] text-[var(--text-secondary)] leading-[1.6] mb-5 md:mb-[20px] break-words">
+      <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 20 }}>
         {insight.description}
       </p>
 
       {/* Signals */}
-      <div className="mb-6 md:mb-[24px]">
-        <div className="text-[12px] font-semibold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-[10px]">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
           Supporting Signals
         </div>
-        <div className="flex flex-wrap gap-[8px]">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {insight.signals.map((signal, i) => {
             const isUp = signal.direction === "up";
             const isDown = signal.direction === "down";
-            const isPositive = isDown; 
+            // Map signals to strict semantic colors
+            const isPositive = isDown; // Assuming lower is better mostly
             const isNegative = isUp;
             const fgClass = isNegative ? "var(--semantic-danger)" : isPositive ? "var(--semantic-success)" : "var(--text-secondary)";
             const bgClass = isNegative ? "var(--semantic-danger-bg)" : isPositive ? "var(--semantic-success-bg)" : "var(--bg-tertiary)";
             
             return (
-              <div key={i} className="flex items-center gap-[6px] rounded-[6px] px-[12px] py-[6px]" style={{ background: bgClass }}>
-                <span className="text-[13px] text-[var(--text-secondary)] font-medium max-w-[150px] truncate sm:max-w-none">{signal.metric}</span>
-                <span className="font-mono text-[13px] font-semibold whitespace-nowrap" style={{ color: fgClass }}>
+              <div key={i} style={{
+                display: "flex", alignItems: "center", gap: 6,
+                background: bgClass, borderRadius: 6, padding: "6px 12px",
+              }}>
+                <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500 }}>{signal.metric}</span>
+                <span className="font-mono" style={{ fontSize: 13, fontWeight: 600, color: fgClass }}>
                   {DIRECTION_ICONS[signal.direction]} {signal.value}
                 </span>
               </div>
@@ -75,15 +89,15 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
       </div>
 
       {/* Confidence */}
-      <div className="mb-6 md:mb-[24px]">
-        <div className="flex justify-between items-center mb-[8px]">
-          <div className="flex items-center gap-[6px]">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <Shield size={14} color="var(--text-muted)" />
-            <span className="text-[13px] font-medium text-[var(--text-muted)]">
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-muted)" }}>
               Confidence Score
             </span>
           </div>
-          <span className="font-mono text-[14px] font-semibold text-[var(--text-primary)]">
+          <span className="font-mono" style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
             {insight.confidence.toFixed(2)}
           </span>
         </div>
@@ -93,15 +107,13 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
       </div>
 
       {/* CTA */}
-      <div className="mt-auto">
-        <Link
-          href={`/insights/${developerId}/${insight.id}`}
-          className="btn-primary w-full sm:w-auto justify-center"
-        >
-          View Recommendations
-          <ChevronRight size={16} />
-        </Link>
-      </div>
+      <Link
+        href={`/insights/${developerId}/${insight.id}`}
+        className="btn-primary"
+      >
+        View Recommendations
+        <ChevronRight size={16} />
+      </Link>
     </div>
   );
 }

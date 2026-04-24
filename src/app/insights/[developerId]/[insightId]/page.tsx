@@ -48,25 +48,23 @@ export default function InsightDetailPage({
   const developer = developers.find(d => d.developer_id === developerId);
 
   if (loading) return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
-      <div className="hidden md:block w-[260px] bg-[var(--bg-secondary)] border-r border-[var(--border-default)]" />
-      <main className="flex-1 w-full pt-20 px-4 md:pt-[40px] md:px-[40px] md:ml-[260px]">
-        <div className="h-[24px] w-[200px] bg-[var(--bg-tertiary)] rounded-md mb-[32px]" />
-        <div className="h-[280px] bg-[var(--bg-tertiary)] rounded-[16px] mb-[24px] w-full" />
-        <div className="h-[200px] bg-[var(--bg-tertiary)] rounded-[16px] w-full" />
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+      <div style={{ width: 260, background: "var(--bg-secondary)", borderRight: "1px solid var(--border-default)" }} />
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px" }}>
+        <div style={{ height: 24, width: 200, background: "var(--bg-tertiary)", marginBottom: 32 }} />
+        <div style={{ height: 280, background: "var(--bg-tertiary)", borderRadius: 16, marginBottom: 24 }} />
+        <div style={{ height: 200, background: "var(--bg-tertiary)", borderRadius: 16 }} />
       </main>
     </div>
   );
 
   if (!insight) return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
       <Sidebar developers={developers} activeDeveloperId={developerId} />
-      <main className="flex-1 w-full md:ml-[260px] pt-20 md:pt-0 flex flex-col items-center justify-center p-8">
-        <div className="text-[48px] mb-[16px]">🔍</div>
-        <h2 className="text-[20px] font-semibold text-[var(--text-primary)] mb-[8px] text-center">Insight not found</h2>
-        <Link href={`/dashboard/${developerId}`} className="text-[var(--accent-primary)] text-[14px] font-medium hover:underline">
-          &larr; Back to dashboard
-        </Link>
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)", marginBottom: 8 }}>Insight not found</h2>
+        <Link href={`/dashboard/${developerId}`} style={{ color: "var(--accent-primary)", fontSize: 14, fontWeight: 500, textDecoration: "none" }}>← Back to dashboard</Link>
       </main>
     </div>
   );
@@ -76,68 +74,91 @@ export default function InsightDetailPage({
   const DIRECTION_ICONS: Record<string, string>  = { up: "↑", down: "↓", neutral: "→" };
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
       <Sidebar developers={developers} activeDeveloperId={developerId} />
-      
-      <main className="flex-1 w-full pt-20 px-4 pb-10 md:pt-[40px] md:px-[40px] md:pb-[40px] md:ml-[260px] md:max-w-[calc(100vw-260px)] min-w-0">
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px", maxWidth: "calc(100vw - 260px)" }}>
 
         {/* Breadcrumb */}
-        <Link href={`/dashboard/${developerId}`} className="inline-flex items-center gap-[6px] text-[14px] font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors mb-[32px]">
+        <Link href={`/dashboard/${developerId}`} style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          fontSize: 14, fontWeight: 500, color: "var(--text-muted)", textDecoration: "none", marginBottom: 32,
+          transition: "color 0.2s"
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.color = "var(--text-primary)"}
+        onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
+        >
           <ChevronLeft size={16} />
-          <span className="truncate">Back to {developer?.name}'s Dashboard</span>
+          Back to {developer?.name}'s Dashboard
         </Link>
 
         {/* Insight hero card */}
-        <div className="hero-insight-card p-6 md:p-[40px] mb-[40px] w-full min-w-0">
+        <div className="hero-insight-card" style={{ padding: 40, marginBottom: 40 }}>
           {/* Top row */}
-          <div className="flex flex-col sm:flex-row sm:items-start gap-5 md:gap-[20px] mb-8 md:mb-[32px]">
-            <div className={`${cfg.badge} w-[56px] h-[56px] rounded-[12px] shrink-0 flex items-center justify-center`}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 20, marginBottom: 32 }}>
+            <div className={cfg.badge} style={{
+              width: 56, height: 56, borderRadius: 12, flexShrink: 0,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
               <SevIcon size={24} />
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap gap-[12px] mb-[12px]">
-                <span className={`${cfg.badge} px-[10px] py-[4px] rounded-[6px] text-[12px] font-medium`}>{cfg.label}</span>
-                <span className="px-[10px] py-[4px] rounded-[6px] text-[12px] font-medium bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-light)]">
+            <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
+                <span className={cfg.badge} style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>{cfg.label}</span>
+                <span style={{
+                  fontSize: 12, fontWeight: 500, padding: "4px 10px", borderRadius: 6,
+                  background: "var(--bg-tertiary)", color: "var(--text-secondary)",
+                  border: "1px solid var(--border-light)",
+                }}>
                   {insight.category}
                 </span>
               </div>
-              <h1 className="text-[28px] font-semibold text-[var(--text-primary)] tracking-[-0.5px] leading-[1.3] break-words">
+              <h1 style={{ fontSize: 28, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px", lineHeight: 1.3 }}>
                 {insight.title}
               </h1>
             </div>
           </div>
 
           {/* Explanation */}
-          <div className="bg-[var(--bg-tertiary)] border border-[var(--border-light)] rounded-[12px] p-[24px] mb-[32px]">
-            <div className="text-[13px] font-semibold text-[var(--text-primary)] mb-[12px]">
+          <div style={{
+            background: "var(--bg-tertiary)", border: "1px solid var(--border-light)",
+            borderRadius: 12, padding: "24px", marginBottom: 32,
+          }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", marginBottom: 12 }}>
               Explanation
             </div>
-            <p className="text-[15px] text-[var(--text-secondary)] leading-[1.6] break-words">
-              {insight.description}
-            </p>
+            <p style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.6 }}>{insight.description}</p>
           </div>
 
           {/* Two-column: signals + confidence */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[24px]">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
 
             {/* Signals */}
-            <div className="bg-[var(--bg-secondary)] border border-[var(--border-default)] rounded-[12px] p-[24px] w-full min-w-0">
-              <div className="flex items-center gap-[8px] mb-[20px]">
-                <Layers size={18} className="text-[var(--text-muted)] shrink-0" />
-                <span className="text-[15px] font-semibold text-[var(--text-primary)] truncate">
+            <div style={{
+              background: "var(--bg-secondary)", border: "1px solid var(--border-default)",
+              borderRadius: 12, padding: "24px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+                <Layers size={18} color="var(--text-muted)" />
+                <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
                   Supporting Signals
                 </span>
               </div>
-              <div className="flex flex-col gap-[12px]">
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {insight.signals.map((s, i) => {
                   const isUp = s.direction === "up";
                   const isDown = s.direction === "down";
                   const dirColor = isUp ? "var(--semantic-danger)" : isDown ? "var(--semantic-success)" : "var(--text-secondary)";
                   const bgClass = isUp ? "var(--semantic-danger-bg)" : isDown ? "var(--semantic-success-bg)" : "var(--bg-tertiary)";
                   return (
-                    <div key={i} className="flex items-center justify-between gap-[16px] px-[16px] py-[12px] rounded-[8px]" style={{ background: bgClass }}>
-                      <span className="text-[14px] text-[var(--text-primary)] font-medium truncate">{s.metric}</span>
-                      <span className="font-mono text-[15px] font-semibold shrink-0" style={{ color: dirColor }}>
+                    <div key={i} style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      padding: "12px 16px", borderRadius: 8,
+                      background: bgClass,
+                    }}>
+                      <span style={{ fontSize: 14, color: "var(--text-primary)", fontWeight: 500 }}>{s.metric}</span>
+                      <span className="font-mono" style={{
+                        fontSize: 15, fontWeight: 600, color: dirColor,
+                      }}>
                         {DIRECTION_ICONS[s.direction]} {s.value}
                       </span>
                     </div>
@@ -147,39 +168,44 @@ export default function InsightDetailPage({
             </div>
 
             {/* Confidence */}
-            <div className="bg-[var(--bg-secondary)] border border-[var(--border-default)] rounded-[12px] p-[24px] w-full min-w-0">
-              <div className="flex items-center gap-[8px] mb-[20px]">
-                <Shield size={18} className="text-[var(--text-muted)] shrink-0" />
-                <span className="text-[15px] font-semibold text-[var(--text-primary)] truncate">
+            <div style={{
+              background: "var(--bg-secondary)", border: "1px solid var(--border-default)",
+              borderRadius: 12, padding: "24px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+                <Shield size={18} color="var(--text-muted)" />
+                <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
                   Confidence Analysis
                 </span>
               </div>
-              <div className="mb-[24px]">
-                <div className="flex justify-between items-center mb-[10px]">
-                  <span className="text-[14px] text-[var(--text-secondary)] font-medium truncate">Confidence Score</span>
-                  <span className="font-mono text-[22px] font-semibold text-[var(--text-primary)] shrink-0">
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+                  <span style={{ fontSize: 14, color: "var(--text-secondary)", fontWeight: 500 }}>Confidence Score</span>
+                  <span className="font-mono" style={{ fontSize: 22, fontWeight: 600, color: "var(--text-primary)" }}>
                     {insight.confidence.toFixed(2)}
                   </span>
                 </div>
-                <div className="confidence-bar w-full">
+                <div className="confidence-bar">
                   <div className="confidence-fill" style={{ width: `${insight.confidence * 100}%` }} />
                 </div>
               </div>
-              <div className="text-[14px] text-[var(--text-muted)] leading-[1.6] break-words">
+              <div style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6 }}>
                 Confidence is derived from the deviation magnitude of each signal from the team baseline and historical average. Scores above 0.8 indicate a well-corroborated pattern.
               </div>
-              <div className="mt-[24px]">
-                <div className="text-[13px] font-semibold text-[var(--text-primary)] mb-[12px]">
+              <div style={{ marginTop: 24 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", marginBottom: 12 }}>
                   Affected Metrics
                 </div>
-                <div className="flex flex-wrap gap-[8px]">
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {insight.affectedMetrics.length > 0
                     ? insight.affectedMetrics.map(m => (
-                        <span key={m} className="text-[12px] font-medium px-[12px] py-[6px] rounded-[6px] bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-light)] truncate max-w-full">
-                          {m}
-                        </span>
+                        <span key={m} style={{
+                          fontSize: 12, fontWeight: 500, padding: "6px 12px", borderRadius: 6,
+                          background: "var(--bg-tertiary)", color: "var(--text-secondary)",
+                          border: "1px solid var(--border-light)",
+                        }}>{m}</span>
                       ))
-                    : <span className="text-[13px] text-[var(--text-muted)] truncate">All metrics within healthy range</span>
+                    : <span style={{ fontSize: 13, color: "var(--text-muted)" }}>All metrics within healthy range</span>
                   }
                 </div>
               </div>
@@ -189,43 +215,47 @@ export default function InsightDetailPage({
 
         {/* Recommendations */}
         {recommendations.length > 0 && (
-          <div className="w-full min-w-0">
-            <div className="flex items-center gap-[10px] mb-[24px]">
-              <div className="p-[6px] bg-[var(--bg-tertiary)] rounded-[6px] text-[var(--accent-primary)] shrink-0">
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+              <div style={{ padding: 6, background: "var(--bg-tertiary)", borderRadius: 6, color: "var(--accent-primary)" }}>
                 <Target size={20} />
               </div>
-              <h2 className="text-[20px] font-semibold text-[var(--text-primary)] truncate">
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>
                 Recommendations ({recommendations.length})
               </h2>
             </div>
-            <div className="flex flex-col gap-[20px]">
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {recommendations.map((rec) => (
-                <div key={rec.id} className="premium-card p-6 md:p-[32px] w-full min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-[16px] mb-[16px]">
-                    <h3 className="text-[18px] font-semibold text-[var(--text-primary)] break-words">{rec.title}</h3>
-                    <div className="flex gap-[8px] shrink-0">
-                      <span className={`px-[10px] py-[4px] rounded-[6px] text-[12px] font-medium badge-${rec.impact === 'high' ? 'danger' : rec.impact === 'medium' ? 'warning' : 'success'}`}>
+                <div key={rec.id} className="premium-card" style={{ padding: 32 }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, marginBottom: 16 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>{rec.title}</h3>
+                    <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                      <span className={`badge-${rec.impact === 'high' ? 'danger' : rec.impact === 'medium' ? 'warning' : 'success'}`} style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>
                         Impact: {rec.impact}
                       </span>
-                      <span className="px-[10px] py-[4px] rounded-[6px] text-[12px] font-medium badge-neutral border border-[var(--border-light)]">
+                      <span className="badge-neutral" style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>
                         Effort: {rec.effort}
                       </span>
                     </div>
                   </div>
-                  <p className="text-[15px] text-[var(--text-secondary)] leading-[1.6] mb-[24px] break-words">{rec.rationale}</p>
-                  <div className="text-[13px] font-semibold text-[var(--text-primary)] uppercase tracking-[0.05em] mb-[16px]">
+                  <p style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 24 }}>{rec.rationale}</p>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 16 }}>
                     Action Steps
                   </div>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-[16px]">
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                     {rec.actions.map((action, ai) => (
-                      <div key={ai} className="flex items-start gap-[12px] p-[16px] rounded-[8px] bg-[var(--bg-tertiary)] border border-[var(--border-light)] w-full min-w-0">
-                        <ArrowRight size={16} className="text-[var(--text-muted)] mt-[2px] shrink-0" />
-                        <span className="text-[14px] text-[var(--text-primary)] leading-[1.5] font-medium break-words">{action}</span>
+                      <div key={ai} style={{
+                        display: "flex", alignItems: "flex-start", gap: 12,
+                        padding: "16px", borderRadius: 8,
+                        background: "var(--bg-tertiary)", border: "1px solid var(--border-light)",
+                      }}>
+                        <ArrowRight size={16} color="var(--text-muted)" style={{ marginTop: 2, flexShrink: 0 }} />
+                        <span style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.5, fontWeight: 500 }}>{action}</span>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-[32px] pt-[16px] border-t border-[var(--border-default)] text-[14px] text-[var(--text-secondary)] flex flex-wrap gap-2 truncate">
-                    Target metric: <span className="text-[var(--accent-primary)] font-semibold truncate">{rec.metric}</span>
+                  <div style={{ marginTop: 32, paddingTop: 16, borderTop: "1px solid var(--border-default)", fontSize: 14, color: "var(--text-secondary)" }}>
+                    Target metric: <span style={{ color: "var(--accent-primary)", fontWeight: 600, marginLeft: 4 }}>{rec.metric}</span>
                   </div>
                 </div>
               ))}

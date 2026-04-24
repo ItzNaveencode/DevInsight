@@ -44,12 +44,12 @@ export default function ManagerPage() {
   }, []);
 
   if (loading || !data) return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
-      <div className="hidden md:block w-[260px] bg-[var(--bg-secondary)] border-r border-[var(--border-default)]" />
-      <main className="flex-1 w-full pt-20 px-4 md:pt-[40px] md:px-[40px] md:ml-[260px]">
-        <div className="h-12 w-64 bg-[var(--bg-tertiary)] rounded-lg mb-8" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {[1,2,3,4].map(i => <div key={i} className="h-[110px] bg-[var(--bg-tertiary)] rounded-[16px] w-full" />)}
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+      <div style={{ width: 260, background: "var(--bg-secondary)", borderRight: "1px solid var(--border-default)" }} />
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px" }}>
+        <div style={{ height: 48, width: 300, background: "var(--bg-tertiary)", marginBottom: 32, borderRadius: 8 }} />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 32 }}>
+          {[1,2,3,4].map(i => <div key={i} style={{ height: 110, background: "var(--bg-tertiary)", borderRadius: 16 }} />)}
         </div>
       </main>
     </div>
@@ -58,22 +58,25 @@ export default function ManagerPage() {
   const { teamAverages, memberSummaries, summary } = data;
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
       <Sidebar developers={developers} activeDeveloperId={developers[0]?.developer_id ?? ""} />
-      
-      <main className="flex-1 w-full pt-20 px-4 pb-10 md:pt-[40px] md:px-[40px] md:pb-[40px] md:ml-[260px] md:max-w-[calc(100vw-260px)] min-w-0">
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px", maxWidth: "calc(100vw - 260px)" }}>
 
         {/* Header */}
-        <div className="mb-8 md:mb-[40px] pb-6 md:pb-[24px] border-b border-[var(--border-default)]">
-          <div className="flex items-center gap-4 md:gap-[16px]">
-            <div className="w-[56px] h-[56px] rounded-[12px] bg-[var(--bg-tertiary)] flex items-center justify-center shrink-0">
+        <div style={{ marginBottom: 40, paddingBottom: 24, borderBottom: "1px solid var(--border-default)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 12,
+              background: "var(--bg-tertiary)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
               <Users size={24} color="var(--text-primary)" />
             </div>
-            <div className="min-w-0">
-              <h1 className="text-[24px] font-semibold text-[var(--text-primary)] tracking-[-0.5px] truncate">
+            <div>
+              <h1 style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px" }}>
                 Manager Summary
               </h1>
-              <p className="text-[14px] text-[var(--text-secondary)] mt-[4px] truncate">
+              <p style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4 }}>
                 Team-level metrics and bottleneck overview
               </p>
             </div>
@@ -81,32 +84,35 @@ export default function ManagerPage() {
         </div>
 
         {/* Team health overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-[16px] mb-8 md:mb-[32px]">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 32 }}>
           {[
             { label: "Total Members",   value: summary.totalMembers, color: "var(--text-primary)",  badgeClass: "badge-neutral", Icon: Users         },
             { label: "Critical Issues", value: summary.criticalCount, color: "var(--semantic-danger)", badgeClass: "badge-danger",  Icon: AlertTriangle },
             { label: "Warnings",        value: summary.warningCount,  color: "var(--semantic-warning)",badgeClass: "badge-warning", Icon: Zap           },
             { label: "Healthy",         value: summary.healthyCount,  color: "var(--semantic-success)",badgeClass: "badge-success", Icon: CheckCircle   },
           ].map(({ label, value, color, badgeClass, Icon }) => (
-            <div key={label} className="premium-card p-6 md:p-[24px] flex items-center gap-[16px] w-full min-w-0">
-              <div className={`${badgeClass} w-[48px] h-[48px] rounded-[12px] flex items-center justify-center shrink-0`}>
+            <div key={label} className="premium-card" style={{ padding: "24px", display: "flex", alignItems: "center", gap: 16 }}>
+              <div className={badgeClass} style={{
+                width: 48, height: 48, borderRadius: 12,
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              }}>
                 <Icon size={20} color={color} />
               </div>
-              <div className="min-w-0">
-                <div className="font-mono text-[32px] font-semibold text-[var(--text-primary)] leading-none truncate">{value}</div>
-                <div className="text-[13px] text-[var(--text-secondary)] font-medium mt-[6px] truncate">{label}</div>
+              <div>
+                <div className="font-mono" style={{ fontSize: 32, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginTop: 6 }}>{label}</div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Team averages */}
-        <div className="premium-card p-6 md:p-[32px] mb-8 md:mb-[32px] w-full min-w-0">
-          <div className="flex items-center gap-[10px] mb-[24px]">
-            <BarChart2 size={20} className="text-[var(--accent-primary)] shrink-0" />
-            <h2 className="text-[18px] font-semibold text-[var(--text-primary)] truncate">Team Averages (30-day)</h2>
+        <div className="premium-card" style={{ padding: 32, marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+            <BarChart2 size={20} color="var(--accent-primary)" />
+            <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>Team Averages (30-day)</h2>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-[24px]">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 24 }}>
             {[
               { label: "Lead Time",    value: teamAverages.leadTime,        unit: "h" },
               { label: "Cycle Time",   value: teamAverages.cycleTime,       unit: "h" },
@@ -114,10 +120,10 @@ export default function ManagerPage() {
               { label: "Deploy Freq.", value: teamAverages.deployFrequency, unit: "/30d" },
               { label: "Bug Rate",     value: teamAverages.bugRate,         unit: "%" },
             ].map(m => (
-              <div key={m.label} className="min-w-0">
-                <div className="text-[13px] text-[var(--text-secondary)] font-medium mb-[8px] truncate">{m.label}</div>
-                <div className="font-mono text-[24px] font-semibold text-[var(--text-primary)] truncate">
-                  {m.value}<span className="text-[14px] font-sans text-[var(--text-muted)] ml-[2px]">{m.unit}</span>
+              <div key={m.label}>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 8 }}>{m.label}</div>
+                <div className="font-mono" style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)" }}>
+                  {m.value}<span style={{ fontSize: 14, color: "var(--text-muted)", marginLeft: 2, fontFamily: "Inter" }}>{m.unit}</span>
                 </div>
               </div>
             ))}
@@ -125,65 +131,79 @@ export default function ManagerPage() {
         </div>
 
         {/* Member table */}
-        <div className="premium-card w-full overflow-hidden">
-          <div className="p-[24px] border-b border-[var(--border-default)]">
-            <h2 className="text-[18px] font-semibold text-[var(--text-primary)] truncate">Developer Breakdown</h2>
+        <div className="premium-card" style={{ overflow: "hidden" }}>
+          <div style={{ padding: "24px", borderBottom: "1px solid var(--border-default)" }}>
+            <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>Developer Breakdown</h2>
           </div>
 
-          <div className="w-full overflow-x-auto">
-            <div className="min-w-[800px]">
-              {/* Table Header */}
-              <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_2fr] px-[24px] py-[16px] border-b border-[var(--border-default)] text-[12px] font-semibold text-[var(--text-muted)] uppercase tracking-[0.05em] bg-[var(--bg-tertiary)]">
-                {["Developer", "Lead", "Cycle", "PRs", "Deploys", "Bugs", "Top Insight"].map(h => (
-                  <div key={h} className="truncate px-2">{h}</div>
-                ))}
-              </div>
+          <div style={{
+            display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr 2fr",
+            padding: "16px 24px", borderBottom: "1px solid var(--border-default)",
+            fontSize: 12, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em",
+            backgroundColor: "var(--bg-tertiary)",
+          }}>
+            {["Developer", "Lead", "Cycle", "PRs", "Deploys", "Bugs", "Top Insight"].map(h => (
+              <div key={h}>{h}</div>
+            ))}
+          </div>
 
-              {/* Table Rows */}
-              {memberSummaries.map((member, i) => {
-                const cfg = HEALTH_CONFIG[member.health] ?? HEALTH_CONFIG.healthy;
-                const HIcon = cfg.Icon;
-                return (
-                  <Link key={member.developer.developer_id} href={`/dashboard/${member.developer.developer_id}`} className="block w-full">
-                    <div className={`grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_2fr] px-[24px] py-[16px] items-center transition-colors hover:bg-[var(--bg-tertiary)] ${i < memberSummaries.length - 1 ? 'border-b border-[var(--border-default)]' : ''}`}>
-                      
-                      <div className="flex items-center gap-[12px] px-2 min-w-0">
-                        <div className="w-[36px] h-[36px] rounded-[8px] bg-[var(--bg-tertiary)] border border-[var(--border-light)] flex items-center justify-center text-[13px] font-semibold text-[var(--text-primary)] shrink-0">
-                          {member.developer.avatar}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-[14px] font-medium text-[var(--text-primary)] truncate">{member.developer.name}</div>
-                          <div className="text-[12px] text-[var(--text-muted)] mt-[2px] truncate">{member.developer.team_name} · {member.developer.role}</div>
-                        </div>
-                      </div>
-
-                      {[
-                        { v: member.metrics.leadTime,        u: "h" },
-                        { v: member.metrics.cycleTime,       u: "h" },
-                        { v: member.metrics.prThroughput,    u: "" },
-                        { v: member.metrics.deployFrequency, u: "" },
-                        { v: member.metrics.bugRate,         u: "%" },
-                      ].map((m, mi) => (
-                        <div key={mi} className="font-mono text-[14px] font-medium text-[var(--text-primary)] px-2 truncate">
-                          {m.v}<span className="text-[12px] font-sans text-[var(--text-muted)] ml-[2px]">{m.u}</span>
-                        </div>
-                      ))}
-
-                      <div className="flex items-center gap-[8px] px-2 min-w-0">
-                        <div className={`${cfg.badge} px-[12px] py-[6px] rounded-[6px] text-[13px] font-medium flex items-center gap-[6px] truncate max-w-[220px]`}>
-                          <HIcon size={14} className="shrink-0" />
-                          <span className="truncate">{member.topInsight?.title ?? "Healthy"}</span>
-                        </div>
-                      </div>
-
+          {memberSummaries.map((member, i) => {
+            const cfg = HEALTH_CONFIG[member.health] ?? HEALTH_CONFIG.healthy;
+            const HIcon = cfg.Icon;
+            return (
+              <Link key={member.developer.developer_id} href={`/dashboard/${member.developer.developer_id}`} style={{ textDecoration: "none" }}>
+                <div
+                  style={{
+                    display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr 2fr",
+                    padding: "16px 24px", alignItems: "center",
+                    borderBottom: i < memberSummaries.length - 1 ? "1px solid var(--border-default)" : "none",
+                    transition: "background-color 0.15s",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--bg-tertiary)")}
+                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{
+                      width: 36, height: 36, borderRadius: 8, flexShrink: 0,
+                      background: "var(--bg-tertiary)", border: "1px solid var(--border-light)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 13, fontWeight: 600, color: "var(--text-primary)",
+                    }}>
+                      {member.developer.avatar}
                     </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: "var(--text-primary)" }}>{member.developer.name}</div>
+                      <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>{member.developer.team_name} · {member.developer.role}</div>
+                    </div>
+                  </div>
+
+                  {[
+                    { v: member.metrics.leadTime,        u: "h" },
+                    { v: member.metrics.cycleTime,       u: "h" },
+                    { v: member.metrics.prThroughput,    u: "" },
+                    { v: member.metrics.deployFrequency, u: "" },
+                    { v: member.metrics.bugRate,         u: "%" },
+                  ].map((m, mi) => (
+                    <div key={mi} className="font-mono" style={{ fontSize: 14, fontWeight: 500, color: "var(--text-primary)" }}>
+                      {m.v}<span style={{ fontSize: 12, color: "var(--text-muted)", marginLeft: 2, fontFamily: "Inter" }}>{m.u}</span>
+                    </div>
+                  ))}
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div className={cfg.badge} style={{
+                      padding: "6px 12px", borderRadius: 6, fontSize: 13, fontWeight: 500,
+                      display: "flex", alignItems: "center", gap: 6,
+                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 220,
+                    }}>
+                      <HIcon size={14} />
+                      {member.topInsight?.title ?? "Healthy"}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
-        
       </main>
     </div>
   );

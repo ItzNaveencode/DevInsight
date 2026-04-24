@@ -6,8 +6,7 @@ import MetricCard from "@/components/MetricCard";
 import InsightCard from "@/components/InsightCard";
 import {
   Clock, GitPullRequest, Rocket, Bug, Timer,
-  RefreshCw, ArrowRight, CheckCircle2,
-  Layers, AlertCircle, Target
+  RefreshCw, CheckCircle2, Layers, AlertCircle, Target, ArrowRight
 } from "lucide-react";
 import type { ComputedMetrics } from "@/lib/engines/metrics";
 import type { Insight }         from "@/lib/engines/insights";
@@ -51,61 +50,49 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
   if (loading || !metrics || !insights) return <LoadingSkeleton />;
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-main)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
       <Sidebar developers={developers} activeDeveloperId={developerId} />
 
       <main style={{ marginLeft: 260, flex: 1, padding: "40px", maxWidth: "calc(100vw - 260px)" }}>
-        {/* Page Header */}
-        <div style={{ marginBottom: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-                <div style={{
-                  width: 48, height: 48, borderRadius: 8,
-                  background: "var(--brand-primary)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 18, fontWeight: 600, color: "white",
-                }}>
-                  {developer?.avatar}
-                </div>
-                <div>
-                  <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.5px", lineHeight: 1.2 }}>
-                    {developer?.name}
-                  </h1>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
-                    <span style={{ fontSize: 14, color: "var(--text-muted)" }}>{developer?.role}</span>
-                    <span style={{ color: "var(--border-color)" }}>|</span>
-                    <span style={{ fontSize: 14, color: "var(--text-muted)" }}>{developer?.team_name} Team</span>
-                  </div>
+        {/* Page Header (Top Bar substitute) */}
+        <div style={{ marginBottom: 40, paddingBottom: 24, borderBottom: "1px solid var(--border-default)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: 12,
+                background: "var(--bg-tertiary)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 20, fontWeight: 600, color: "var(--text-primary)",
+              }}>
+                {developer?.avatar}
+              </div>
+              <div>
+                <h1 style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px" }}>
+                  {developer?.name}
+                </h1>
+                <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 6 }}>
+                  <span style={{ fontSize: 14, color: "var(--text-secondary)" }}>{developer?.role}</span>
+                  <span style={{ color: "var(--border-light)" }}>|</span>
+                  <span style={{ fontSize: 14, color: "var(--text-secondary)" }}>{developer?.team_name} Team</span>
                 </div>
               </div>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: "8px 12px", borderRadius: 6, fontSize: 13, fontWeight: 500,
-                background: "var(--bg-card)", color: "var(--text-muted)",
-                border: "1px solid var(--border-color)",
-              }}>
-                <RefreshCw size={14} />
-                Synced Just Now
-              </div>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8,
+              padding: "8px 16px", borderRadius: 8, fontSize: 13, fontWeight: 500,
+              background: "var(--bg-secondary)", color: "var(--text-secondary)",
+              border: "1px solid var(--border-default)",
+            }}>
+              <RefreshCw size={14} />
+              Synced Just Now
             </div>
           </div>
         </div>
 
         {/* ── INSIGHTS (primary) ──────────────────────────────── */}
         <section style={{ marginBottom: 48 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-            <div>
-              <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-main)" }}>Active Insights</h2>
-              <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: 4 }}>
-                {insights.length} insight{insights.length !== 1 ? "s" : ""} detected based on metric correlations
-              </p>
-            </div>
-            <span className={insights.some(i => i.severity === "critical") ? "tag severity-critical" : "tag severity-healthy"}>
-              {insights.some(i => i.severity === "critical") ? "Action Required" : "No Critical Issues"}
-            </span>
+          <div style={{ marginBottom: 24 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>Active Insights</h2>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {insights.map((insight, i) => (
@@ -116,11 +103,8 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
 
         {/* ── METRICS GRID (secondary) ──────────────────────── */}
         <section style={{ marginBottom: 48 }}>
-          <div style={{ marginBottom: 16 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-main)" }}>Metrics Overview</h2>
-            <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: 4 }}>
-              Computed over 30-day rolling window
-            </p>
+          <div style={{ marginBottom: 24 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>Metrics Overview</h2>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 16 }}>
@@ -131,7 +115,7 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
               delta={getDelta("lead")?.delta}
               deltaUnit="h"
               lowerIsBetter
-              icon={<Clock size={16} color="var(--chart-lead)" />}
+              icon={<Clock size={16} />}
               subtitle={`Team avg: ${teamAverages.leadTime}h`}
             />
             <MetricCard
@@ -141,7 +125,7 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
               delta={getDelta("cycle")?.delta}
               deltaUnit="h"
               lowerIsBetter
-              icon={<Timer size={16} color="var(--chart-cycle)" />}
+              icon={<Timer size={16} />}
               subtitle={`Team avg: ${teamAverages.cycleTime}h`}
             />
             <MetricCard
@@ -151,7 +135,7 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
               delta={getDelta("throughput")?.delta}
               deltaUnit=""
               lowerIsBetter={false}
-              icon={<GitPullRequest size={16} color="var(--chart-pr)" />}
+              icon={<GitPullRequest size={16} />}
               subtitle={`Team avg: ${teamAverages.prThroughput}`}
             />
             <MetricCard
@@ -161,7 +145,7 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
               delta={getDelta("deploy")?.delta}
               deltaUnit=""
               lowerIsBetter={false}
-              icon={<Rocket size={16} color="var(--chart-deploy)" />}
+              icon={<Rocket size={16} />}
               subtitle={`${metrics?.failedDeploys ?? 0} failed deploys`}
             />
             <MetricCard
@@ -171,7 +155,7 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
               delta={getDelta("bug")?.delta}
               deltaUnit="%"
               lowerIsBetter
-              icon={<Bug size={16} color="var(--chart-bug)" />}
+              icon={<Bug size={16} />}
               subtitle={`${metrics?.escapedBugs ?? 0} escaped bugs`}
             />
           </div>
@@ -179,25 +163,23 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
           {/* Secondary stats row */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 16 }}>
             {[
-              { label: "Total Issues Closed",  value: metrics?.totalIssues,     icon: <CheckCircle2 size={16} color="var(--text-muted)" /> },
-              { label: "Avg PR Size",           value: metrics?.avgPRSize,       icon: <Layers size={16} color="var(--text-muted)" /> },
-              { label: "Avg Time to Review",    value: `${metrics?.avgReviewWait}h`, icon: <AlertCircle size={16} color="var(--text-muted)" /> },
+              { label: "Total Issues Closed",  value: metrics?.totalIssues,         icon: <CheckCircle2 size={16} /> },
+              { label: "Avg PR Size",           value: metrics?.avgPRSize,           icon: <Layers size={16} /> },
+              { label: "Avg Time to Review",    value: `${metrics?.avgReviewWait}h`, icon: <AlertCircle size={16} /> },
             ].map((stat) => (
-              <div key={stat.label} className="professional-card" style={{
-                padding: "20px", display: "flex", alignItems: "center", gap: 16,
-              }}>
+              <div key={stat.label} className="premium-card" style={{ padding: "20px", display: "flex", alignItems: "center", gap: 16 }}>
                 <div style={{
-                  width: 40, height: 40, borderRadius: 6,
-                  background: "var(--bg-subtle)",
+                  width: 40, height: 40, borderRadius: 8,
+                  background: "var(--bg-tertiary)", color: "var(--text-muted)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   {stat.icon}
                 </div>
                 <div>
-                  <div style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 500, marginBottom: 4 }}>
+                  <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 4 }}>
                     {stat.label}
                   </div>
-                  <div style={{ fontSize: 20, fontWeight: 600, color: "var(--text-main)", fontFamily: "'JetBrains Mono', monospace" }}>
+                  <div className="font-mono" style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>
                     {stat.value}
                   </div>
                 </div>
@@ -209,30 +191,32 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
         {/* ── RECOMMENDATIONS ──────────────────────────────────── */}
         {recommendations.length > 0 && (
           <section>
-            <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
-              <Target size={20} color="var(--brand-primary)" />
-              <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-main)" }}>Recommendations</h2>
+            <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ padding: 6, background: "var(--bg-tertiary)", borderRadius: 6, color: "var(--accent-primary)" }}>
+                <Target size={20} />
+              </div>
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>Recommendations</h2>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
               {recommendations.map((rec) => (
-                <div key={rec.id} className="professional-card" style={{ padding: 24 }}>
+                <div key={rec.id} className="premium-card" style={{ padding: 24 }}>
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
-                    <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-main)" }}>{rec.title}</h3>
+                    <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>{rec.title}</h3>
                     <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-                      <span className={`tag severity-${rec.impact === 'high' ? 'critical' : rec.impact === 'medium' ? 'warning' : 'healthy'}`}>
+                      <span className={`badge-${rec.impact === 'high' ? 'danger' : rec.impact === 'medium' ? 'warning' : 'success'}`} style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>
                         Impact: {rec.impact}
                       </span>
-                      <span className="tag" style={{ background: "var(--bg-subtle)", color: "var(--text-muted)" }}>
+                      <span className="badge-neutral" style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>
                         Effort: {rec.effort}
                       </span>
                     </div>
                   </div>
-                  <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6, marginBottom: 16 }}>{rec.rationale}</p>
-                  <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+                  <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 20 }}>{rec.rationale}</p>
+                  <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
                     {rec.actions.map((action, ai) => (
-                      <li key={ai} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                        <ArrowRight size={14} color="var(--text-subtle)" style={{ marginTop: 3, flexShrink: 0 }} />
-                        <span style={{ fontSize: 13, color: "var(--text-main)", lineHeight: 1.5 }}>{action}</span>
+                      <li key={ai} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                        <ArrowRight size={16} color="var(--text-muted)" style={{ marginTop: 2, flexShrink: 0 }} />
+                        <span style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.5 }}>{action}</span>
                       </li>
                     ))}
                   </ul>
@@ -248,13 +232,13 @@ export default function DashboardPage({ params }: { params: Promise<{ developerI
 
 function LoadingSkeleton() {
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-main)" }}>
-      <div style={{ width: 260, background: "var(--bg-sidebar)", borderRight: "1px solid var(--border-color)" }} />
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+      <div style={{ width: 260, background: "var(--bg-secondary)", borderRight: "1px solid var(--border-default)" }} />
       <main style={{ marginLeft: 260, flex: 1, padding: "40px" }}>
-        <div className="skeleton" style={{ height: 60, width: 300, marginBottom: 32 }} />
-        {[1, 2].map(i => <div key={i} className="skeleton" style={{ height: 180, marginBottom: 16, borderRadius: 8 }} />)}
+        <div style={{ height: 60, width: 300, background: "var(--bg-tertiary)", borderRadius: 8, marginBottom: 40 }} />
+        {[1, 2].map(i => <div key={i} style={{ height: 180, background: "var(--bg-tertiary)", marginBottom: 16, borderRadius: 16 }} />)}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 16, marginTop: 32 }}>
-          {[1,2,3,4,5].map(i => <div key={i} className="skeleton" style={{ height: 110 }} />)}
+          {[1,2,3,4,5].map(i => <div key={i} style={{ height: 110, background: "var(--bg-tertiary)", borderRadius: 16 }} />)}
         </div>
       </main>
     </div>

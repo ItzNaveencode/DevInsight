@@ -10,10 +10,10 @@ interface InsightCardProps {
 }
 
 const SEVERITY_CONFIG = {
-  critical: { icon: AlertTriangle, label: "Critical"  },
-  warning:  { icon: Zap,           label: "Warning"   },
-  info:     { icon: Info,          label: "Info"      },
-  healthy:  { icon: CheckCircle,   label: "Healthy"   },
+  critical: { icon: AlertTriangle, badge: "badge-danger",  color: "var(--semantic-danger)" },
+  warning:  { icon: Zap,           badge: "badge-warning", color: "var(--semantic-warning)" },
+  info:     { icon: Info,          badge: "badge-neutral", color: "var(--text-secondary)" },
+  healthy:  { icon: CheckCircle,   badge: "badge-success", color: "var(--semantic-success)" },
 };
 
 const DIRECTION_ICONS: Record<string, string> = { up: "↑", down: "↓", neutral: "→" };
@@ -21,67 +21,65 @@ const DIRECTION_ICONS: Record<string, string> = { up: "↑", down: "↓", neutra
 export default function InsightCard({ insight, developerId, index = 0 }: InsightCardProps) {
   const cfg = SEVERITY_CONFIG[insight.severity];
   const Icon = cfg.icon;
+  const isHero = index === 0;
 
   return (
     <div
-      className="professional-card"
+      className={isHero ? "hero-insight-card" : "premium-card"}
       style={{
         padding: 24,
-        animationDelay: `${index * 80}ms`,
       }}
     >
       {/* Header row */}
       <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
-        <div className={`severity-${insight.severity}`} style={{
-          width: 44, height: 44, borderRadius: 8, flexShrink: 0,
+        <div style={{
+          width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+          background: "var(--bg-tertiary)",
           display: "flex", alignItems: "center", justifyContent: "center",
+          color: cfg.color
         }}>
           <Icon size={20} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
-            <span className={`tag severity-${insight.severity}`}>
-              {cfg.label}
-            </span>
-            <span style={{
-              fontSize: 12, color: "var(--text-muted)", background: "var(--bg-subtle)",
-              padding: "2px 8px", borderRadius: 6,
-            }}>
-              {insight.category}
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              Insight
             </span>
           </div>
-          <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-main)", lineHeight: 1.4 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.4 }}>
             {insight.title}
           </h3>
         </div>
       </div>
 
       {/* Description */}
-      <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6, marginBottom: 20 }}>
+      <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 20 }}>
         {insight.description}
       </p>
 
       {/* Signals */}
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", marginBottom: 10 }}>
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
           Supporting Signals
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {insight.signals.map((signal, i) => {
             const isUp = signal.direction === "up";
             const isDown = signal.direction === "down";
-            const dirColor = isUp ? "var(--status-critical-fg)" : isDown ? "var(--status-healthy-fg)" : "var(--text-muted)";
+            // Map signals to strict semantic colors
+            const isPositive = isDown; // Assuming lower is better mostly
+            const isNegative = isUp;
+            const fgClass = isNegative ? "var(--semantic-danger)" : isPositive ? "var(--semantic-success)" : "var(--text-secondary)";
+            const bgClass = isNegative ? "var(--semantic-danger-bg)" : isPositive ? "var(--semantic-success-bg)" : "var(--bg-tertiary)";
+            
             return (
               <div key={i} style={{
                 display: "flex", alignItems: "center", gap: 6,
-                background: "var(--bg-subtle)", borderRadius: 6, padding: "6px 12px",
+                background: bgClass, borderRadius: 6, padding: "6px 12px",
               }}>
-                <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>{signal.metric}</span>
-                <span style={{
-                  fontSize: 13, fontWeight: 600, color: dirColor,
-                  fontFamily: "'JetBrains Mono', monospace",
-                }}>
+                <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500 }}>{signal.metric}</span>
+                <span className="font-mono" style={{ fontSize: 13, fontWeight: 600, color: fgClass }}>
                   {DIRECTION_ICONS[signal.direction]} {signal.value}
                 </span>
               </div>
@@ -94,12 +92,12 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <Shield size={14} color="var(--text-subtle)" />
-            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-muted)" }}>
+            <Shield size={14} color="var(--text-muted)" />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-muted)" }}>
               Confidence Score
             </span>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-main)", fontFamily: "'JetBrains Mono', monospace" }}>
+          <span className="font-mono" style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
             {insight.confidence.toFixed(2)}
           </span>
         </div>
@@ -111,17 +109,10 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
       {/* CTA */}
       <Link
         href={`/insights/${developerId}/${insight.id}`}
-        className={`severity-${insight.severity}`}
-        style={{
-          display: "inline-flex", alignItems: "center", gap: 6,
-          padding: "8px 16px", borderRadius: 6, fontSize: 13, fontWeight: 500,
-          textDecoration: "none", transition: "opacity 0.2s",
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.opacity = "0.8"}
-        onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
+        className="btn-primary"
       >
         View Recommendations
-        <ChevronRight size={14} />
+        <ChevronRight size={16} />
       </Link>
     </div>
   );

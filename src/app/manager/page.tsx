@@ -20,11 +20,11 @@ interface ManagerData {
   summary: { criticalCount: number; warningCount: number; healthyCount: number; totalMembers: number };
 }
 
-const HEALTH_CONFIG: Record<string, { color: string; bg: string; border: string; label: string; Icon: any }> = {
-  critical: { color: "var(--status-critical-fg)", bg: "var(--status-critical-bg)", border: "var(--status-critical-border)", label: "Critical",  Icon: AlertTriangle },
-  warning:  { color: "var(--status-warning-fg)", bg: "var(--status-warning-bg)", border: "var(--status-warning-border)", label: "Warning",  Icon: Zap           },
-  healthy:  { color: "var(--status-healthy-fg)", bg: "var(--status-healthy-bg)", border: "var(--status-healthy-border)", label: "Healthy",  Icon: CheckCircle   },
-  info:     { color: "var(--status-info-fg)", bg: "var(--status-info-bg)", border: "var(--status-info-border)", label: "Info",     Icon: CheckCircle   },
+const HEALTH_CONFIG: Record<string, { color: string; badge: string; label: string; Icon: any }> = {
+  critical: { color: "var(--semantic-danger)",  badge: "badge-danger",  label: "Critical",  Icon: AlertTriangle },
+  warning:  { color: "var(--semantic-warning)", badge: "badge-warning", label: "Warning",   Icon: Zap           },
+  healthy:  { color: "var(--semantic-success)", badge: "badge-success", label: "Healthy",   Icon: CheckCircle   },
+  info:     { color: "var(--text-secondary)",   badge: "badge-neutral", label: "Info",      Icon: CheckCircle   },
 };
 
 export default function ManagerPage() {
@@ -44,14 +44,13 @@ export default function ManagerPage() {
   }, []);
 
   if (loading || !data) return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-main)" }}>
-      <div style={{ width: 260, background: "var(--bg-sidebar)", borderRight: "1px solid var(--border-color)" }} />
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+      <div style={{ width: 260, background: "var(--bg-secondary)", borderRight: "1px solid var(--border-default)" }} />
       <main style={{ marginLeft: 260, flex: 1, padding: "40px" }}>
-        <div className="skeleton" style={{ height: 48, width: 300, marginBottom: 32 }} />
+        <div style={{ height: 48, width: 300, background: "var(--bg-tertiary)", marginBottom: 32, borderRadius: 8 }} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 32 }}>
-          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: 110 }} />)}
+          {[1,2,3,4].map(i => <div key={i} style={{ height: 110, background: "var(--bg-tertiary)", borderRadius: 16 }} />)}
         </div>
-        {[1,2,3,4,5].map(i => <div key={i} className="skeleton" style={{ height: 80, marginBottom: 12, borderRadius: 8 }} />)}
       </main>
     </div>
   );
@@ -59,26 +58,26 @@ export default function ManagerPage() {
   const { teamAverages, memberSummaries, summary } = data;
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-main)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
       <Sidebar developers={developers} activeDeveloperId={developers[0]?.developer_id ?? ""} />
       <main style={{ marginLeft: 260, flex: 1, padding: "40px", maxWidth: "calc(100vw - 260px)" }}>
 
         {/* Header */}
-        <div style={{ marginBottom: 40 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+        <div style={{ marginBottom: 40, paddingBottom: 24, borderBottom: "1px solid var(--border-default)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <div style={{
-              width: 48, height: 48, borderRadius: 8,
-              background: "var(--brand-primary)",
+              width: 56, height: 56, borderRadius: 12,
+              background: "var(--bg-tertiary)",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <Users size={20} color="white" />
+              <Users size={24} color="var(--text-primary)" />
             </div>
             <div>
-              <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.5px" }}>
+              <h1 style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px" }}>
                 Manager Summary
               </h1>
-              <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: 4 }}>
-                Team-level metrics · Bottleneck overview · Role-based access view
+              <p style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4 }}>
+                Team-level metrics and bottleneck overview
               </p>
             </div>
           </div>
@@ -87,47 +86,44 @@ export default function ManagerPage() {
         {/* Team health overview */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 32 }}>
           {[
-            { label: "Total Members",   value: summary.totalMembers, color: "var(--text-main)", bg: "var(--bg-subtle)", border: "var(--border-color)", Icon: Users         },
-            { label: "Critical Issues", value: summary.criticalCount, color: "var(--status-critical-fg)", bg: "var(--status-critical-bg)", border: "var(--status-critical-border)", Icon: AlertTriangle },
-            { label: "Warnings",        value: summary.warningCount,  color: "var(--status-warning-fg)", bg: "var(--status-warning-bg)", border: "var(--status-warning-border)", Icon: Zap           },
-            { label: "Healthy",         value: summary.healthyCount,  color: "var(--status-healthy-fg)", bg: "var(--status-healthy-bg)", border: "var(--status-healthy-border)", Icon: CheckCircle   },
-          ].map(({ label, value, color, bg, border, Icon }) => (
-            <div key={label} className="professional-card" style={{
-              padding: "24px", display: "flex", alignItems: "center", gap: 16,
-            }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: 8,
-                background: bg, border: `1px solid ${border}`,
+            { label: "Total Members",   value: summary.totalMembers, color: "var(--text-primary)",  badgeClass: "badge-neutral", Icon: Users         },
+            { label: "Critical Issues", value: summary.criticalCount, color: "var(--semantic-danger)", badgeClass: "badge-danger",  Icon: AlertTriangle },
+            { label: "Warnings",        value: summary.warningCount,  color: "var(--semantic-warning)",badgeClass: "badge-warning", Icon: Zap           },
+            { label: "Healthy",         value: summary.healthyCount,  color: "var(--semantic-success)",badgeClass: "badge-success", Icon: CheckCircle   },
+          ].map(({ label, value, color, badgeClass, Icon }) => (
+            <div key={label} className="premium-card" style={{ padding: "24px", display: "flex", alignItems: "center", gap: 16 }}>
+              <div className={badgeClass} style={{
+                width: 48, height: 48, borderRadius: 12,
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <Icon size={20} color={color} />
               </div>
               <div>
-                <div style={{ fontSize: 32, fontWeight: 700, color: "var(--text-main)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{value}</div>
-                <div style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 500, marginTop: 6 }}>{label}</div>
+                <div className="font-mono" style={{ fontSize: 32, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginTop: 6 }}>{label}</div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Team averages */}
-        <div className="professional-card" style={{ padding: 32, marginBottom: 32 }}>
+        <div className="premium-card" style={{ padding: 32, marginBottom: 32 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-            <BarChart2 size={18} color="var(--text-muted)" />
-            <h2 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-main)" }}>Team Averages (30-day)</h2>
+            <BarChart2 size={20} color="var(--accent-primary)" />
+            <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>Team Averages (30-day)</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 24 }}>
             {[
-              { label: "Lead Time",    value: teamAverages.leadTime,        unit: "h",   color: "var(--chart-lead)" },
-              { label: "Cycle Time",   value: teamAverages.cycleTime,       unit: "h",   color: "var(--chart-cycle)" },
-              { label: "PR Throughput",value: teamAverages.prThroughput,    unit: " PRs",color: "var(--chart-pr)" },
-              { label: "Deploy Freq.", value: teamAverages.deployFrequency, unit: "/30d",color: "var(--chart-deploy)" },
-              { label: "Bug Rate",     value: teamAverages.bugRate,         unit: "%",   color: "var(--chart-bug)" },
+              { label: "Lead Time",    value: teamAverages.leadTime,        unit: "h" },
+              { label: "Cycle Time",   value: teamAverages.cycleTime,       unit: "h" },
+              { label: "PR Throughput",value: teamAverages.prThroughput,    unit: " PRs" },
+              { label: "Deploy Freq.", value: teamAverages.deployFrequency, unit: "/30d" },
+              { label: "Bug Rate",     value: teamAverages.bugRate,         unit: "%" },
             ].map(m => (
               <div key={m.label}>
-                <div style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500, marginBottom: 8 }}>{m.label}</div>
-                <div style={{ fontSize: 24, fontWeight: 600, color: "var(--text-main)", fontFamily: "'JetBrains Mono', monospace" }}>
-                  {m.value}<span style={{ fontSize: 16, color: "var(--text-subtle)", marginLeft: 2 }}>{m.unit}</span>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 8 }}>{m.label}</div>
+                <div className="font-mono" style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)" }}>
+                  {m.value}<span style={{ fontSize: 14, color: "var(--text-muted)", marginLeft: 2, fontFamily: "Inter" }}>{m.unit}</span>
                 </div>
               </div>
             ))}
@@ -135,20 +131,18 @@ export default function ManagerPage() {
         </div>
 
         {/* Member table */}
-        <div className="professional-card" style={{ overflow: "hidden" }}>
-          <div style={{ padding: "24px", borderBottom: "1px solid var(--border-color)", backgroundColor: "var(--bg-subtle)" }}>
-            <h2 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-main)" }}>Developer Breakdown</h2>
-            <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 4 }}>Click any developer to view their full dashboard</p>
+        <div className="premium-card" style={{ overflow: "hidden" }}>
+          <div style={{ padding: "24px", borderBottom: "1px solid var(--border-default)" }}>
+            <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>Developer Breakdown</h2>
           </div>
 
-          {/* Table header */}
           <div style={{
             display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr 2fr",
-            padding: "16px 24px", borderBottom: "1px solid var(--border-color)",
+            padding: "16px 24px", borderBottom: "1px solid var(--border-default)",
             fontSize: 12, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em",
-            backgroundColor: "var(--bg-card)",
+            backgroundColor: "var(--bg-tertiary)",
           }}>
-            {["Developer", "Lead Time", "Cycle Time", "PRs", "Deploys", "Bug Rate", "Top Insight"].map(h => (
+            {["Developer", "Lead", "Cycle", "PRs", "Deploys", "Bugs", "Top Insight"].map(h => (
               <div key={h}>{h}</div>
             ))}
           </div>
@@ -162,45 +156,43 @@ export default function ManagerPage() {
                   style={{
                     display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr 2fr",
                     padding: "16px 24px", alignItems: "center",
-                    borderBottom: i < memberSummaries.length - 1 ? "1px solid var(--border-color)" : "none",
-                    backgroundColor: "var(--bg-card)", cursor: "pointer", transition: "background-color 0.15s",
+                    borderBottom: i < memberSummaries.length - 1 ? "1px solid var(--border-default)" : "none",
+                    transition: "background-color 0.15s",
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--bg-subtle)")}
-                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--bg-card)")}
+                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--bg-tertiary)")}
+                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
                 >
-                  {/* Developer */}
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <div style={{
-                      width: 36, height: 36, borderRadius: 6, flexShrink: 0,
-                      background: "var(--bg-subtle)", border: "1px solid var(--border-color)",
+                      width: 36, height: 36, borderRadius: 8, flexShrink: 0,
+                      background: "var(--bg-tertiary)", border: "1px solid var(--border-light)",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 12, fontWeight: 600, color: "var(--text-main)",
+                      fontSize: 13, fontWeight: 600, color: "var(--text-primary)",
                     }}>
                       {member.developer.avatar}
                     </div>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-main)" }}>{member.developer.name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: "var(--text-primary)" }}>{member.developer.name}</div>
                       <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>{member.developer.team_name} · {member.developer.role}</div>
                     </div>
                   </div>
 
-                  {/* Metrics */}
                   {[
-                    { v: member.metrics.leadTime,        u: "h"   },
-                    { v: member.metrics.cycleTime,       u: "h"   },
-                    { v: member.metrics.prThroughput,    u: ""    },
-                    { v: member.metrics.deployFrequency, u: ""    },
-                    { v: member.metrics.bugRate,         u: "%"   },
+                    { v: member.metrics.leadTime,        u: "h" },
+                    { v: member.metrics.cycleTime,       u: "h" },
+                    { v: member.metrics.prThroughput,    u: "" },
+                    { v: member.metrics.deployFrequency, u: "" },
+                    { v: member.metrics.bugRate,         u: "%" },
                   ].map((m, mi) => (
-                    <div key={mi} style={{ fontSize: 14, fontWeight: 500, color: "var(--text-main)", fontFamily: "'JetBrains Mono', monospace" }}>
-                      {m.v}<span style={{ fontSize: 12, color: "var(--text-subtle)", marginLeft: 2 }}>{m.u}</span>
+                    <div key={mi} className="font-mono" style={{ fontSize: 14, fontWeight: 500, color: "var(--text-primary)" }}>
+                      {m.v}<span style={{ fontSize: 12, color: "var(--text-muted)", marginLeft: 2, fontFamily: "Inter" }}>{m.u}</span>
                     </div>
                   ))}
 
-                  {/* Top insight */}
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div className={`tag severity-${member.health}`} style={{
-                      padding: "6px 12px", borderRadius: 6,
+                    <div className={cfg.badge} style={{
+                      padding: "6px 12px", borderRadius: 6, fontSize: 13, fontWeight: 500,
+                      display: "flex", alignItems: "center", gap: 6,
                       whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 220,
                     }}>
                       <HIcon size={14} />
@@ -212,7 +204,6 @@ export default function ManagerPage() {
             );
           })}
         </div>
-
       </main>
     </div>
   );

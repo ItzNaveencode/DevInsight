@@ -9,7 +9,6 @@ interface MetricCardProps {
   deltaUnit?: string;
   lowerIsBetter?: boolean;
   icon?: React.ReactNode;
-  color?: string; // We'll map this to standard if passed, but typically we can ignore it or use a default
   subtitle?: string;
 }
 
@@ -23,26 +22,22 @@ export default function MetricCard({
   const isNeutral = delta === undefined || Math.abs(delta) < 0.5;
 
   return (
-    <div className="professional-card" style={{ position: "relative", padding: "20px" }}>
+    <div className="premium-card" style={{ padding: "24px" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-muted)" }}>
+        <span style={{ fontSize: 14, fontWeight: 500, color: "var(--text-secondary)" }}>
           {label}
         </span>
         {icon && (
-          <div style={{
-            width: 32, height: 32, borderRadius: 6,
-            background: "var(--bg-subtle)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
+          <div style={{ color: "var(--text-muted)" }}>
             {icon}
           </div>
         )}
       </div>
 
       {/* Value */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 8 }}>
-        <span style={{ fontSize: 32, fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.5px" }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 12 }}>
+        <span style={{ fontSize: 32, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px" }}>
           {value}
         </span>
         {unit && (
@@ -53,10 +48,10 @@ export default function MetricCard({
       {/* Delta */}
       {delta !== undefined && !isNeutral && (
         <div style={{
-          display: "inline-flex", alignItems: "center", gap: 4,
-          padding: "4px 8px", borderRadius: 6, fontSize: 12, fontWeight: 500,
-          background: isPositive ? "var(--status-healthy-bg)" : "var(--status-critical-bg)",
-          color: isPositive ? "var(--status-healthy-fg)" : "var(--status-critical-fg)",
+          display: "inline-flex", alignItems: "center", gap: 6,
+          padding: "4px 8px", borderRadius: 6, fontSize: 13, fontWeight: 500,
+          background: isPositive ? "var(--semantic-success-bg)" : "var(--semantic-danger-bg)",
+          color: isPositive ? "var(--semantic-success)" : "var(--semantic-danger)",
         }}>
           {isPositive ? <TrendingDown size={14} /> : <TrendingUp size={14} />}
           {Math.abs(delta).toFixed(1)}{deltaUnit} vs prev
@@ -64,16 +59,16 @@ export default function MetricCard({
       )}
       {isNeutral && delta !== undefined && (
         <div style={{
-          display: "inline-flex", alignItems: "center", gap: 4,
-          padding: "4px 8px", borderRadius: 6, fontSize: 12, fontWeight: 500,
-          background: "var(--bg-subtle)", color: "var(--text-muted)",
+          display: "inline-flex", alignItems: "center", gap: 6,
+          padding: "4px 8px", borderRadius: 6, fontSize: 13, fontWeight: 500,
+          background: "var(--bg-tertiary)", color: "var(--text-secondary)",
         }}>
           <Minus size={14} /> Stable
         </div>
       )}
 
       {subtitle && (
-        <div style={{ fontSize: 12, color: "var(--text-subtle)", marginTop: 8 }}>{subtitle}</div>
+        <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 12 }}>{subtitle}</div>
       )}
     </div>
   );

@@ -48,55 +48,56 @@ export default function TrendsPage({ params }: { params: Promise<{ developerId: 
   };
 
   if (loading) return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
-      <div style={{ width: 260, background: "var(--bg-secondary)", borderRight: "1px solid var(--border-default)" }} />
-      <main style={{ marginLeft: 260, flex: 1, padding: "40px" }}>
-        <div style={{ height: 48, width: 300, background: "var(--bg-tertiary)", marginBottom: 32, borderRadius: 8 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 16, marginBottom: 32 }}>
-          {[1,2,3,4,5].map(i => <div key={i} style={{ height: 110, background: "var(--bg-tertiary)", borderRadius: 16 }} />)}
+    <div className="flex min-h-screen bg-[var(--bg-primary)]">
+      <div className="hidden md:block w-[260px] bg-[var(--bg-secondary)] border-r border-[var(--border-default)]" />
+      <main className="flex-1 w-full pt-20 px-4 md:pt-[40px] md:px-[40px] md:ml-[260px]">
+        <div className="h-12 w-64 bg-[var(--bg-tertiary)] rounded-lg mb-8" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          {[1,2,3,4,5].map(i => <div key={i} className="h-32 bg-[var(--bg-tertiary)] rounded-2xl w-full" />)}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[1,2,3,4].map(i => <div key={i} className="h-64 bg-[var(--bg-tertiary)] rounded-2xl w-full" />)}
         </div>
       </main>
     </div>
   );
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+    <div className="flex min-h-screen bg-[var(--bg-primary)]">
       <Sidebar developers={developers} activeDeveloperId={developerId} />
-      <main style={{ marginLeft: 260, flex: 1, padding: "40px", maxWidth: "calc(100vw - 260px)" }}>
+      
+      <main className="flex-1 w-full pt-20 px-4 pb-10 md:pt-[40px] md:px-[40px] md:pb-[40px] md:ml-[260px] md:max-w-[calc(100vw-260px)] min-w-0">
 
         {/* Header */}
-        <div style={{ marginBottom: 40, paddingBottom: 24, borderBottom: "1px solid var(--border-default)" }}>
-          <h1 style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px", marginBottom: 6 }}>
+        <div className="mb-8 md:mb-[40px] pb-6 md:pb-[24px] border-b border-[var(--border-default)]">
+          <h1 className="text-[24px] font-semibold text-[var(--text-primary)] tracking-[-0.5px] mb-[6px] truncate">
             Trends — {developer?.name}
           </h1>
-          <p style={{ fontSize: 14, color: "var(--text-secondary)" }}>
+          <p className="text-[14px] text-[var(--text-secondary)] break-words">
             8-week rolling history · previous 30-day window vs current
           </p>
         </div>
 
         {/* Delta summary cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 16, marginBottom: 40 }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-[16px] mb-10 md:mb-[40px]">
           {deltas.map(d => {
             const improved = d.direction === "improved";
             const regressed = d.direction === "regressed";
             const badgeClass = improved ? "badge-success" : regressed ? "badge-danger" : "badge-neutral";
             
             return (
-              <div key={d.metric} className="premium-card" style={{ padding: "20px" }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 8 }}>
+              <div key={d.metric} className="premium-card p-5 md:p-[20px] w-full min-w-0 flex flex-col">
+                <div className="text-[14px] font-medium text-[var(--text-secondary)] mb-[8px] truncate">
                   {d.metric}
                 </div>
-                <div className="font-mono" style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)", marginBottom: 12 }}>
-                  {d.current}<span style={{ fontSize: 14, fontFamily: "Inter", marginLeft: 2, color: "var(--text-muted)" }}>{d.unit}</span>
+                <div className="font-mono text-[24px] font-semibold text-[var(--text-primary)] mb-[12px] truncate">
+                  {d.current}<span className="text-[14px] font-sans ml-[2px] text-[var(--text-muted)]">{d.unit}</span>
                 </div>
-                <div className={badgeClass} style={{
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  fontSize: 13, fontWeight: 500, padding: "4px 8px", borderRadius: 6,
-                }}>
+                <div className={`inline-flex items-center gap-[6px] w-fit px-[8px] py-[4px] rounded-[6px] text-[13px] font-medium ${badgeClass}`}>
                   {improved ? <TrendingDown size={14}/> : regressed ? <TrendingUp size={14}/> : <Minus size={14}/>}
-                  {Math.abs(d.deltaPercent)}%
+                  <span>{Math.abs(d.deltaPercent)}%</span>
                 </div>
-                <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 12 }}>
+                <div className="text-[12px] text-[var(--text-muted)] mt-auto pt-[12px] truncate">
                   Previous: {d.previous}{d.unit}
                 </div>
               </div>
@@ -105,41 +106,44 @@ export default function TrendsPage({ params }: { params: Promise<{ developerId: 
         </div>
 
         {/* Individual charts grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 24, marginBottom: 24 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-[24px] mb-6 md:mb-[24px]">
           {CHARTS.map(({ key, label, unit, varName, lowerBetter }) => {
             const vals = trendPoints.map(p => p[key] as number);
             const avg = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
             const chartColor = getCssVar(varName);
 
             return (
-              <div key={key} className="premium-card" style={{ padding: 24 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-                  <div>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)", marginBottom: 4 }}>{label}</div>
-                    <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>
+              <div key={key} className="premium-card p-6 md:p-[24px] w-full min-w-0">
+                <div className="flex justify-between items-start mb-6 md:mb-[24px] gap-4">
+                  <div className="min-w-0">
+                    <div className="text-[16px] font-semibold text-[var(--text-primary)] mb-[4px] truncate">{label}</div>
+                    <div className="text-[13px] text-[var(--text-secondary)] truncate">
                       {lowerBetter ? "Lower is better" : "Higher is better"}
                     </div>
                   </div>
-                  <div style={{ width: 12, height: 12, borderRadius: "50%", background: chartColor }} />
+                  <div className="w-[12px] h-[12px] rounded-full shrink-0" style={{ background: chartColor }} />
                 </div>
-                <ResponsiveContainer width="100%" height={160}>
-                  <LineChart data={trendPoints} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                    <CartesianGrid stroke="var(--border-default)" strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="week" tick={{ fill: "var(--text-muted)", fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: "var(--text-muted)", fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <Tooltip
-                      contentStyle={{ background: "var(--bg-secondary)", border: "1px solid var(--border-default)", borderRadius: 8, fontSize: 13, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}
-                      labelStyle={{ color: "var(--text-secondary)", marginBottom: 4 }} itemStyle={{ color: "var(--text-primary)", fontWeight: 600 }}
-                    />
-                    <ReferenceLine y={avg} stroke={chartColor} strokeDasharray="4 4" strokeOpacity={0.5} />
-                    <Line type="monotone" dataKey={key} stroke={chartColor} strokeWidth={2.5}
-                      dot={{ fill: "var(--bg-secondary)", stroke: chartColor, strokeWidth: 2, r: 4 }} activeDot={{ r: 6, strokeWidth: 0, fill: chartColor }} />
-                  </LineChart>
-                </ResponsiveContainer>
+                <div className="w-full h-[160px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={trendPoints} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                      <CartesianGrid stroke="var(--border-default)" strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="week" tick={{ fill: "var(--text-muted)", fontSize: 12 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: "var(--text-muted)", fontSize: 12 }} axisLine={false} tickLine={false} width={40} />
+                      <Tooltip
+                        contentStyle={{ background: "var(--bg-secondary)", border: "1px solid var(--border-default)", borderRadius: 8, fontSize: 13, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}
+                        labelStyle={{ color: "var(--text-secondary)", marginBottom: 4 }} itemStyle={{ color: "var(--text-primary)", fontWeight: 600 }}
+                      />
+                      <ReferenceLine y={avg} stroke={chartColor} strokeDasharray="4 4" strokeOpacity={0.5} />
+                      <Line type="monotone" dataKey={key} stroke={chartColor} strokeWidth={2.5}
+                        dot={{ fill: "var(--bg-secondary)", stroke: chartColor, strokeWidth: 2, r: 4 }} activeDot={{ r: 6, strokeWidth: 0, fill: chartColor }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             );
           })}
         </div>
+
       </main>
     </div>
   );

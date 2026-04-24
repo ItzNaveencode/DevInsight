@@ -24,62 +24,48 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
   const isHero = index === 0;
 
   return (
-    <div
-      className={isHero ? "hero-insight-card" : "premium-card"}
-      style={{
-        padding: 24,
-      }}
-    >
+    <div className={`w-full min-w-0 p-6 md:p-[24px] flex flex-col ${isHero ? "hero-insight-card" : "premium-card"}`}>
       {/* Header row */}
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
-        <div style={{
-          width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-          background: "var(--bg-tertiary)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: cfg.color
-        }}>
+      <div className="flex flex-col sm:flex-row sm:items-start gap-4 md:gap-[16px] mb-4 md:mb-[16px]">
+        <div className="w-11 h-11 md:w-[44px] md:h-[44px] rounded-xl flex-shrink-0 bg-[var(--bg-tertiary)] flex items-center justify-center" style={{ color: cfg.color }}>
           <Icon size={20} />
         </div>
 
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
-            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1.5 md:mb-[6px] flex-wrap">
+            <span className="text-[13px] font-medium text-[var(--text-muted)] uppercase tracking-[0.05em]">
               Insight
             </span>
           </div>
-          <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.4 }}>
+          <h3 className="text-[18px] font-semibold text-[var(--text-primary)] leading-[1.4] break-words">
             {insight.title}
           </h3>
         </div>
       </div>
 
       {/* Description */}
-      <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 20 }}>
+      <p className="text-[14px] text-[var(--text-secondary)] leading-[1.6] mb-5 md:mb-[20px] break-words">
         {insight.description}
       </p>
 
       {/* Signals */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+      <div className="mb-6 md:mb-[24px]">
+        <div className="text-[12px] font-semibold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-[10px]">
           Supporting Signals
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <div className="flex flex-wrap gap-[8px]">
           {insight.signals.map((signal, i) => {
             const isUp = signal.direction === "up";
             const isDown = signal.direction === "down";
-            // Map signals to strict semantic colors
-            const isPositive = isDown; // Assuming lower is better mostly
+            const isPositive = isDown; 
             const isNegative = isUp;
             const fgClass = isNegative ? "var(--semantic-danger)" : isPositive ? "var(--semantic-success)" : "var(--text-secondary)";
             const bgClass = isNegative ? "var(--semantic-danger-bg)" : isPositive ? "var(--semantic-success-bg)" : "var(--bg-tertiary)";
             
             return (
-              <div key={i} style={{
-                display: "flex", alignItems: "center", gap: 6,
-                background: bgClass, borderRadius: 6, padding: "6px 12px",
-              }}>
-                <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500 }}>{signal.metric}</span>
-                <span className="font-mono" style={{ fontSize: 13, fontWeight: 600, color: fgClass }}>
+              <div key={i} className="flex items-center gap-[6px] rounded-[6px] px-[12px] py-[6px]" style={{ background: bgClass }}>
+                <span className="text-[13px] text-[var(--text-secondary)] font-medium max-w-[150px] truncate sm:max-w-none">{signal.metric}</span>
+                <span className="font-mono text-[13px] font-semibold whitespace-nowrap" style={{ color: fgClass }}>
                   {DIRECTION_ICONS[signal.direction]} {signal.value}
                 </span>
               </div>
@@ -89,15 +75,15 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
       </div>
 
       {/* Confidence */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+      <div className="mb-6 md:mb-[24px]">
+        <div className="flex justify-between items-center mb-[8px]">
+          <div className="flex items-center gap-[6px]">
             <Shield size={14} color="var(--text-muted)" />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-muted)" }}>
+            <span className="text-[13px] font-medium text-[var(--text-muted)]">
               Confidence Score
             </span>
           </div>
-          <span className="font-mono" style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
+          <span className="font-mono text-[14px] font-semibold text-[var(--text-primary)]">
             {insight.confidence.toFixed(2)}
           </span>
         </div>
@@ -107,13 +93,15 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
       </div>
 
       {/* CTA */}
-      <Link
-        href={`/insights/${developerId}/${insight.id}`}
-        className="btn-primary"
-      >
-        View Recommendations
-        <ChevronRight size={16} />
-      </Link>
+      <div className="mt-auto">
+        <Link
+          href={`/insights/${developerId}/${insight.id}`}
+          className="btn-primary w-full sm:w-auto justify-center"
+        >
+          View Recommendations
+          <ChevronRight size={16} />
+        </Link>
+      </div>
     </div>
   );
 }

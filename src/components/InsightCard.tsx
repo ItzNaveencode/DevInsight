@@ -24,86 +24,96 @@ export default function InsightCard({ insight, developerId, index = 0 }: Insight
   const isHero = index === 0;
 
   return (
-    <div className={`w-full min-w-0 flex flex-col p-6 ${isHero ? "hero-insight-card" : "premium-card"}`}>
+    <div
+      className={isHero ? "hero-insight-card" : "premium-card"}
+      style={{
+        padding: 24,
+      }}
+    >
       {/* Header row */}
-      <div className="flex flex-col sm:flex-row sm:items-start gap-4 mb-4">
-        <div className="w-11 h-11 rounded-xl bg-[var(--bg-tertiary)] flex items-center justify-center shrink-0" style={{ color: cfg.color }}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
+        <div style={{
+          width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+          background: "var(--bg-tertiary)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          color: cfg.color
+        }}>
           <Icon size={20} />
         </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-1.5">
-            <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
               Insight
             </span>
           </div>
-          <h3 className="text-lg font-semibold text-[var(--text-primary)] leading-snug break-words">
+          <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.4 }}>
             {insight.title}
           </h3>
         </div>
       </div>
 
       {/* Description */}
-      <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-6 break-words">
+      <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 20 }}>
         {insight.description}
       </p>
 
-      {/* Grid container for Signals & Confidence to stack on mobile, row on tablet+ */}
-      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 mb-6">
-        {/* Signals */}
-        <div className="flex-1 min-w-0">
-          <div className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-2.5">
-            Supporting Signals
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {insight.signals.map((signal, i) => {
-              const isUp = signal.direction === "up";
-              const isDown = signal.direction === "down";
-              const isPositive = isDown; // Assuming lower is better mostly
-              const isNegative = isUp;
-              
-              const fgClass = isNegative ? "var(--semantic-danger)" : isPositive ? "var(--semantic-success)" : "var(--text-secondary)";
-              const bgClass = isNegative ? "var(--semantic-danger-bg)" : isPositive ? "var(--semantic-success-bg)" : "var(--bg-tertiary)";
-              
-              return (
-                <div key={i} className="flex items-center gap-1.5 rounded-md px-3 py-1.5" style={{ background: bgClass }}>
-                  <span className="text-sm text-[var(--text-secondary)] font-medium truncate max-w-[120px] sm:max-w-none">{signal.metric}</span>
-                  <span className="font-mono text-sm font-semibold whitespace-nowrap" style={{ color: fgClass }}>
-                    {DIRECTION_ICONS[signal.direction]} {signal.value}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+      {/* Signals */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+          Supporting Signals
         </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {insight.signals.map((signal, i) => {
+            const isUp = signal.direction === "up";
+            const isDown = signal.direction === "down";
+            // Map signals to strict semantic colors
+            const isPositive = isDown; // Assuming lower is better mostly
+            const isNegative = isUp;
+            const fgClass = isNegative ? "var(--semantic-danger)" : isPositive ? "var(--semantic-success)" : "var(--text-secondary)";
+            const bgClass = isNegative ? "var(--semantic-danger-bg)" : isPositive ? "var(--semantic-success-bg)" : "var(--bg-tertiary)";
+            
+            return (
+              <div key={i} style={{
+                display: "flex", alignItems: "center", gap: 6,
+                background: bgClass, borderRadius: 6, padding: "6px 12px",
+              }}>
+                <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500 }}>{signal.metric}</span>
+                <span className="font-mono" style={{ fontSize: 13, fontWeight: 600, color: fgClass }}>
+                  {DIRECTION_ICONS[signal.direction]} {signal.value}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-        {/* Confidence */}
-        <div className="w-full lg:w-48 shrink-0">
-          <div className="flex justify-between items-center mb-2">
-            <div className="flex items-center gap-1.5 text-[var(--text-muted)]">
-              <Shield size={14} />
-              <span className="text-xs font-medium">Confidence</span>
-            </div>
-            <span className="font-mono text-sm font-semibold text-[var(--text-primary)]">
-              {insight.confidence.toFixed(2)}
+      {/* Confidence */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <Shield size={14} color="var(--text-muted)" />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-muted)" }}>
+              Confidence Score
             </span>
           </div>
-          <div className="confidence-bar w-full">
-            <div className="confidence-fill" style={{ width: `${insight.confidence * 100}%` }} />
-          </div>
+          <span className="font-mono" style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
+            {insight.confidence.toFixed(2)}
+          </span>
+        </div>
+        <div className="confidence-bar">
+          <div className="confidence-fill" style={{ width: `${insight.confidence * 100}%` }} />
         </div>
       </div>
 
       {/* CTA */}
-      <div className="mt-auto pt-2">
-        <Link
-          href={`/insights/${developerId}/${insight.id}`}
-          className="btn-primary w-full sm:w-auto justify-center"
-        >
-          View Recommendations
-          <ChevronRight size={16} />
-        </Link>
-      </div>
+      <Link
+        href={`/insights/${developerId}/${insight.id}`}
+        className="btn-primary"
+      >
+        View Recommendations
+        <ChevronRight size={16} />
+      </Link>
     </div>
   );
 }

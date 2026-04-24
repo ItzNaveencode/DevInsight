@@ -48,27 +48,23 @@ export default function InsightDetailPage({
   const developer = developers.find(d => d.developer_id === developerId);
 
   if (loading) return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
-      <div className="hidden md:block w-64 bg-[var(--bg-secondary)] border-r border-[var(--border-default)]" />
-      <main className="flex-1 w-full md:ml-64 pt-16 md:pt-0">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-          <div className="h-6 w-48 bg-[var(--bg-tertiary)] rounded-md mb-8" />
-          <div className="h-64 bg-[var(--bg-tertiary)] rounded-2xl mb-6 w-full" />
-          <div className="h-48 bg-[var(--bg-tertiary)] rounded-2xl w-full" />
-        </div>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+      <div style={{ width: 260, background: "var(--bg-secondary)", borderRight: "1px solid var(--border-default)" }} />
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px" }}>
+        <div style={{ height: 24, width: 200, background: "var(--bg-tertiary)", marginBottom: 32 }} />
+        <div style={{ height: 280, background: "var(--bg-tertiary)", borderRadius: 16, marginBottom: 24 }} />
+        <div style={{ height: 200, background: "var(--bg-tertiary)", borderRadius: 16 }} />
       </main>
     </div>
   );
 
   if (!insight) return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
       <Sidebar developers={developers} activeDeveloperId={developerId} />
-      <main className="flex-1 w-full md:ml-64 pt-16 md:pt-0 flex flex-col items-center justify-center p-8">
-        <div className="text-5xl mb-4">🔍</div>
-        <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4 text-center">Insight not found</h2>
-        <Link href={`/dashboard/${developerId}`} className="text-[var(--accent-primary)] text-sm font-medium hover:underline">
-          &larr; Back to dashboard
-        </Link>
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)", marginBottom: 8 }}>Insight not found</h2>
+        <Link href={`/dashboard/${developerId}`} style={{ color: "var(--accent-primary)", fontSize: 14, fontWeight: 500, textDecoration: "none" }}>← Back to dashboard</Link>
       </main>
     </div>
   );
@@ -78,164 +74,194 @@ export default function InsightDetailPage({
   const DIRECTION_ICONS: Record<string, string>  = { up: "↑", down: "↓", neutral: "→" };
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
       <Sidebar developers={developers} activeDeveloperId={developerId} />
-      
-      <main className="flex-1 w-full md:ml-64 pt-16 md:pt-0">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px", maxWidth: "calc(100vw - 260px)" }}>
 
-          {/* Breadcrumb */}
-          <Link href={`/dashboard/${developerId}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors mb-8">
-            <ChevronLeft size={16} />
-            <span className="truncate">Back to {developer?.name}'s Dashboard</span>
-          </Link>
+        {/* Breadcrumb */}
+        <Link href={`/dashboard/${developerId}`} style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          fontSize: 14, fontWeight: 500, color: "var(--text-muted)", textDecoration: "none", marginBottom: 32,
+          transition: "color 0.2s"
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.color = "var(--text-primary)"}
+        onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
+        >
+          <ChevronLeft size={16} />
+          Back to {developer?.name}'s Dashboard
+        </Link>
 
-          {/* Insight hero card */}
-          <div className="hero-insight-card p-6 sm:p-10 mb-10 w-full min-w-0">
-            {/* Top row */}
-            <div className="flex flex-col sm:flex-row sm:items-start gap-5 mb-8">
-              <div className={`${cfg.badge} w-14 h-14 rounded-xl shrink-0 flex items-center justify-center`}>
-                <SevIcon size={24} />
+        {/* Insight hero card */}
+        <div className="hero-insight-card" style={{ padding: 40, marginBottom: 40 }}>
+          {/* Top row */}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 20, marginBottom: 32 }}>
+            <div className={cfg.badge} style={{
+              width: 56, height: 56, borderRadius: 12, flexShrink: 0,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <SevIcon size={24} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
+                <span className={cfg.badge} style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>{cfg.label}</span>
+                <span style={{
+                  fontSize: 12, fontWeight: 500, padding: "4px 10px", borderRadius: 6,
+                  background: "var(--bg-tertiary)", color: "var(--text-secondary)",
+                  border: "1px solid var(--border-light)",
+                }}>
+                  {insight.category}
+                </span>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap gap-3 mb-3">
-                  <span className={`${cfg.badge} px-2.5 py-1 rounded-md text-xs font-medium`}>{cfg.label}</span>
-                  <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-light)]">
-                    {insight.category}
-                  </span>
-                </div>
-                <h1 className="text-2xl sm:text-3xl font-semibold text-[var(--text-primary)] tracking-tight leading-snug break-words">
-                  {insight.title}
-                </h1>
+              <h1 style={{ fontSize: 28, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.5px", lineHeight: 1.3 }}>
+                {insight.title}
+              </h1>
+            </div>
+          </div>
+
+          {/* Explanation */}
+          <div style={{
+            background: "var(--bg-tertiary)", border: "1px solid var(--border-light)",
+            borderRadius: 12, padding: "24px", marginBottom: 32,
+          }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", marginBottom: 12 }}>
+              Explanation
+            </div>
+            <p style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.6 }}>{insight.description}</p>
+          </div>
+
+          {/* Two-column: signals + confidence */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+
+            {/* Signals */}
+            <div style={{
+              background: "var(--bg-secondary)", border: "1px solid var(--border-default)",
+              borderRadius: 12, padding: "24px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+                <Layers size={18} color="var(--text-muted)" />
+                <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
+                  Supporting Signals
+                </span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {insight.signals.map((s, i) => {
+                  const isUp = s.direction === "up";
+                  const isDown = s.direction === "down";
+                  const dirColor = isUp ? "var(--semantic-danger)" : isDown ? "var(--semantic-success)" : "var(--text-secondary)";
+                  const bgClass = isUp ? "var(--semantic-danger-bg)" : isDown ? "var(--semantic-success-bg)" : "var(--bg-tertiary)";
+                  return (
+                    <div key={i} style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      padding: "12px 16px", borderRadius: 8,
+                      background: bgClass,
+                    }}>
+                      <span style={{ fontSize: 14, color: "var(--text-primary)", fontWeight: 500 }}>{s.metric}</span>
+                      <span className="font-mono" style={{
+                        fontSize: 15, fontWeight: 600, color: dirColor,
+                      }}>
+                        {DIRECTION_ICONS[s.direction]} {s.value}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Explanation */}
-            <div className="bg-[var(--bg-tertiary)] border border-[var(--border-light)] rounded-xl p-6 mb-8">
-              <div className="text-sm font-semibold text-[var(--text-primary)] mb-3">
-                Explanation
+            {/* Confidence */}
+            <div style={{
+              background: "var(--bg-secondary)", border: "1px solid var(--border-default)",
+              borderRadius: 12, padding: "24px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+                <Shield size={18} color="var(--text-muted)" />
+                <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
+                  Confidence Analysis
+                </span>
               </div>
-              <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed break-words">
-                {insight.description}
-              </p>
-            </div>
-
-            {/* Two-column: signals + confidence */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-              {/* Signals */}
-              <div className="bg-[var(--bg-secondary)] border border-[var(--border-default)] rounded-xl p-6 w-full min-w-0">
-                <div className="flex items-center gap-2 mb-5">
-                  <Layers size={18} className="text-[var(--text-muted)] shrink-0" />
-                  <span className="text-base font-semibold text-[var(--text-primary)] truncate">
-                    Supporting Signals
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+                  <span style={{ fontSize: 14, color: "var(--text-secondary)", fontWeight: 500 }}>Confidence Score</span>
+                  <span className="font-mono" style={{ fontSize: 22, fontWeight: 600, color: "var(--text-primary)" }}>
+                    {insight.confidence.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex flex-col gap-3">
-                  {insight.signals.map((s, i) => {
-                    const isUp = s.direction === "up";
-                    const isDown = s.direction === "down";
-                    const dirColor = isUp ? "var(--semantic-danger)" : isDown ? "var(--semantic-success)" : "var(--text-secondary)";
-                    const bgClass = isUp ? "var(--semantic-danger-bg)" : isDown ? "var(--semantic-success-bg)" : "var(--bg-tertiary)";
-                    return (
-                      <div key={i} className="flex items-center justify-between gap-4 p-3 rounded-lg" style={{ background: bgClass }}>
-                        <span className="text-sm text-[var(--text-primary)] font-medium truncate">{s.metric}</span>
-                        <span className="font-mono text-sm sm:text-base font-semibold shrink-0" style={{ color: dirColor }}>
-                          {DIRECTION_ICONS[s.direction]} {s.value}
-                        </span>
-                      </div>
-                    );
-                  })}
+                <div className="confidence-bar">
+                  <div className="confidence-fill" style={{ width: `${insight.confidence * 100}%` }} />
                 </div>
               </div>
-
-              {/* Confidence */}
-              <div className="bg-[var(--bg-secondary)] border border-[var(--border-default)] rounded-xl p-6 w-full min-w-0">
-                <div className="flex items-center gap-2 mb-5">
-                  <Shield size={18} className="text-[var(--text-muted)] shrink-0" />
-                  <span className="text-base font-semibold text-[var(--text-primary)] truncate">
-                    Confidence Analysis
-                  </span>
+              <div style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6 }}>
+                Confidence is derived from the deviation magnitude of each signal from the team baseline and historical average. Scores above 0.8 indicate a well-corroborated pattern.
+              </div>
+              <div style={{ marginTop: 24 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", marginBottom: 12 }}>
+                  Affected Metrics
                 </div>
-                <div className="mb-6">
-                  <div className="flex justify-between items-center mb-2.5">
-                    <span className="text-sm text-[var(--text-secondary)] font-medium truncate">Confidence Score</span>
-                    <span className="font-mono text-2xl font-semibold text-[var(--text-primary)] shrink-0">
-                      {insight.confidence.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="confidence-bar w-full">
-                    <div className="confidence-fill" style={{ width: `${insight.confidence * 100}%` }} />
-                  </div>
-                </div>
-                <div className="text-sm text-[var(--text-muted)] leading-relaxed break-words">
-                  Confidence is derived from the deviation magnitude of each signal from the team baseline and historical average. Scores above 0.8 indicate a well-corroborated pattern.
-                </div>
-                <div className="mt-6">
-                  <div className="text-sm font-semibold text-[var(--text-primary)] mb-3">
-                    Affected Metrics
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {insight.affectedMetrics.length > 0
-                      ? insight.affectedMetrics.map(m => (
-                          <span key={m} className="text-xs font-medium px-3 py-1.5 rounded-md bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-light)] truncate max-w-full">
-                            {m}
-                          </span>
-                        ))
-                      : <span className="text-sm text-[var(--text-muted)] truncate">All metrics within healthy range</span>
-                    }
-                  </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {insight.affectedMetrics.length > 0
+                    ? insight.affectedMetrics.map(m => (
+                        <span key={m} style={{
+                          fontSize: 12, fontWeight: 500, padding: "6px 12px", borderRadius: 6,
+                          background: "var(--bg-tertiary)", color: "var(--text-secondary)",
+                          border: "1px solid var(--border-light)",
+                        }}>{m}</span>
+                      ))
+                    : <span style={{ fontSize: 13, color: "var(--text-muted)" }}>All metrics within healthy range</span>
+                  }
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Recommendations */}
-          {recommendations.length > 0 && (
-            <div className="w-full min-w-0">
-              <div className="flex items-center gap-2.5 mb-6">
-                <div className="p-1.5 bg-[var(--bg-tertiary)] rounded-md text-[var(--accent-primary)] shrink-0">
-                  <Target size={20} />
-                </div>
-                <h2 className="text-xl font-semibold text-[var(--text-primary)] truncate">
-                  Recommendations ({recommendations.length})
-                </h2>
+        {/* Recommendations */}
+        {recommendations.length > 0 && (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+              <div style={{ padding: 6, background: "var(--bg-tertiary)", borderRadius: 6, color: "var(--accent-primary)" }}>
+                <Target size={20} />
               </div>
-              <div className="flex flex-col gap-5">
-                {recommendations.map((rec) => (
-                  <div key={rec.id} className="premium-card p-6 sm:p-8 w-full min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
-                      <h3 className="text-lg font-semibold text-[var(--text-primary)] break-words">{rec.title}</h3>
-                      <div className="flex gap-2 shrink-0">
-                        <span className={`px-2.5 py-1 rounded-md text-xs font-medium badge-${rec.impact === 'high' ? 'danger' : rec.impact === 'medium' ? 'warning' : 'success'}`}>
-                          Impact: {rec.impact}
-                        </span>
-                        <span className="px-2.5 py-1 rounded-md text-xs font-medium badge-neutral border border-[var(--border-light)]">
-                          Effort: {rec.effort}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed mb-6 break-words">{rec.rationale}</p>
-                    <div className="text-sm font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-4">
-                      Action Steps
-                    </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      {rec.actions.map((action, ai) => (
-                        <div key={ai} className="flex items-start gap-3 p-4 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-light)] w-full min-w-0">
-                          <ArrowRight size={16} className="text-[var(--text-muted)] mt-0.5 shrink-0" />
-                          <span className="text-sm text-[var(--text-primary)] leading-relaxed break-words">{action}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-8 pt-4 border-t border-[var(--border-default)] text-sm text-[var(--text-secondary)] flex flex-wrap gap-2 truncate">
-                      Target metric: <span className="text-[var(--accent-primary)] font-semibold truncate">{rec.metric}</span>
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: "var(--text-primary)" }}>
+                Recommendations ({recommendations.length})
+              </h2>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              {recommendations.map((rec) => (
+                <div key={rec.id} className="premium-card" style={{ padding: 32 }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, marginBottom: 16 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>{rec.title}</h3>
+                    <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                      <span className={`badge-${rec.impact === 'high' ? 'danger' : rec.impact === 'medium' ? 'warning' : 'success'}`} style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>
+                        Impact: {rec.impact}
+                      </span>
+                      <span className="badge-neutral" style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>
+                        Effort: {rec.effort}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
+                  <p style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 24 }}>{rec.rationale}</p>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 16 }}>
+                    Action Steps
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                    {rec.actions.map((action, ai) => (
+                      <div key={ai} style={{
+                        display: "flex", alignItems: "flex-start", gap: 12,
+                        padding: "16px", borderRadius: 8,
+                        background: "var(--bg-tertiary)", border: "1px solid var(--border-light)",
+                      }}>
+                        <ArrowRight size={16} color="var(--text-muted)" style={{ marginTop: 2, flexShrink: 0 }} />
+                        <span style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.5, fontWeight: 500 }}>{action}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: 32, paddingTop: 16, borderTop: "1px solid var(--border-default)", fontSize: 14, color: "var(--text-secondary)" }}>
+                    Target metric: <span style={{ color: "var(--accent-primary)", fontWeight: 600, marginLeft: 4 }}>{rec.metric}</span>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </main>
     </div>
   );

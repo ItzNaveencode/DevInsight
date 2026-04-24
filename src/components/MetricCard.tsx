@@ -9,13 +9,13 @@ interface MetricCardProps {
   deltaUnit?: string;
   lowerIsBetter?: boolean;
   icon?: React.ReactNode;
-  color?: string;
+  color?: string; // We'll map this to standard if passed, but typically we can ignore it or use a default
   subtitle?: string;
 }
 
 export default function MetricCard({
   label, value, unit, delta, deltaUnit, lowerIsBetter = false,
-  icon, color = "#8b5cf6", subtitle,
+  icon, subtitle,
 }: MetricCardProps) {
   const isPositive = delta !== undefined
     ? (lowerIsBetter ? delta < 0 : delta > 0)
@@ -23,24 +23,17 @@ export default function MetricCard({
   const isNeutral = delta === undefined || Math.abs(delta) < 0.5;
 
   return (
-    <div className="metric-card" style={{ position: "relative" }}>
-      {/* Color strip */}
-      <div style={{
-        position: "absolute", top: 0, left: 0, right: 0, height: 2,
-        background: color, borderRadius: "14px 14px 0 0", opacity: 0.7,
-      }} />
-
+    <div className="professional-card" style={{ position: "relative", padding: "20px" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <span style={{ fontSize: 12, fontWeight: 600, color: "#71717a", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-muted)" }}>
           {label}
         </span>
         {icon && (
           <div style={{
-            width: 32, height: 32, borderRadius: 8,
-            background: `${color}18`,
+            width: 32, height: 32, borderRadius: 6,
+            background: "var(--bg-subtle)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            border: `1px solid ${color}30`,
           }}>
             {icon}
           </div>
@@ -49,11 +42,11 @@ export default function MetricCard({
 
       {/* Value */}
       <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 8 }}>
-        <span style={{ fontSize: 32, fontWeight: 700, color: "#f4f4f5", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-1px" }}>
+        <span style={{ fontSize: 32, fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.5px" }}>
           {value}
         </span>
         {unit && (
-          <span style={{ fontSize: 14, color: "#71717a", fontWeight: 500 }}>{unit}</span>
+          <span style={{ fontSize: 14, color: "var(--text-muted)", fontWeight: 500 }}>{unit}</span>
         )}
       </div>
 
@@ -61,28 +54,26 @@ export default function MetricCard({
       {delta !== undefined && !isNeutral && (
         <div style={{
           display: "inline-flex", alignItems: "center", gap: 4,
-          padding: "3px 8px", borderRadius: 6, fontSize: 12, fontWeight: 600,
-          background: isPositive ? "rgba(16,185,129,0.1)" : "rgba(244,63,94,0.1)",
-          color: isPositive ? "#10b981" : "#f43f5e",
-          border: `1px solid ${isPositive ? "rgba(16,185,129,0.25)" : "rgba(244,63,94,0.25)"}`,
+          padding: "4px 8px", borderRadius: 6, fontSize: 12, fontWeight: 500,
+          background: isPositive ? "var(--status-healthy-bg)" : "var(--status-critical-bg)",
+          color: isPositive ? "var(--status-healthy-fg)" : "var(--status-critical-fg)",
         }}>
-          {isPositive ? <TrendingDown size={12} /> : <TrendingUp size={12} />}
-          {Math.abs(delta).toFixed(1)}{deltaUnit} vs prev period
+          {isPositive ? <TrendingDown size={14} /> : <TrendingUp size={14} />}
+          {Math.abs(delta).toFixed(1)}{deltaUnit} vs prev
         </div>
       )}
       {isNeutral && delta !== undefined && (
         <div style={{
           display: "inline-flex", alignItems: "center", gap: 4,
-          padding: "3px 8px", borderRadius: 6, fontSize: 12, fontWeight: 500,
-          background: "rgba(255,255,255,0.05)", color: "#71717a",
-          border: "1px solid rgba(255,255,255,0.08)",
+          padding: "4px 8px", borderRadius: 6, fontSize: 12, fontWeight: 500,
+          background: "var(--bg-subtle)", color: "var(--text-muted)",
         }}>
-          <Minus size={12} /> Stable
+          <Minus size={14} /> Stable
         </div>
       )}
 
       {subtitle && (
-        <div style={{ fontSize: 11, color: "#52525b", marginTop: 6 }}>{subtitle}</div>
+        <div style={{ fontSize: 12, color: "var(--text-subtle)", marginTop: 8 }}>{subtitle}</div>
       )}
     </div>
   );

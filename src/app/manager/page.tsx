@@ -21,10 +21,10 @@ interface ManagerData {
 }
 
 const HEALTH_CONFIG: Record<string, { color: string; bg: string; border: string; label: string; Icon: any }> = {
-  critical: { color: "#f43f5e", bg: "rgba(244,63,94,0.08)", border: "rgba(244,63,94,0.25)", label: "Critical",  Icon: AlertTriangle },
-  warning:  { color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.25)", label: "Warning",  Icon: Zap           },
-  healthy:  { color: "#10b981", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.25)", label: "Healthy",  Icon: CheckCircle   },
-  info:     { color: "#60a5fa", bg: "rgba(59,130,246,0.08)", border: "rgba(59,130,246,0.25)", label: "Info",     Icon: CheckCircle   },
+  critical: { color: "var(--status-critical-fg)", bg: "var(--status-critical-bg)", border: "var(--status-critical-border)", label: "Critical",  Icon: AlertTriangle },
+  warning:  { color: "var(--status-warning-fg)", bg: "var(--status-warning-bg)", border: "var(--status-warning-border)", label: "Warning",  Icon: Zap           },
+  healthy:  { color: "var(--status-healthy-fg)", bg: "var(--status-healthy-bg)", border: "var(--status-healthy-border)", label: "Healthy",  Icon: CheckCircle   },
+  info:     { color: "var(--status-info-fg)", bg: "var(--status-info-bg)", border: "var(--status-info-border)", label: "Info",     Icon: CheckCircle   },
 };
 
 export default function ManagerPage() {
@@ -44,14 +44,14 @@ export default function ManagerPage() {
   }, []);
 
   if (loading || !data) return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#09090b" }}>
-      <div style={{ width: 260, background: "#0d0d10", borderRight: "1px solid rgba(255,255,255,0.06)" }} />
-      <main style={{ marginLeft: 260, flex: 1, padding: "32px 40px" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-main)" }}>
+      <div style={{ width: 260, background: "var(--bg-sidebar)", borderRight: "1px solid var(--border-color)" }} />
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px" }}>
         <div className="skeleton" style={{ height: 48, width: 300, marginBottom: 32 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 32 }}>
-          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: 90 }} />)}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 32 }}>
+          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: 110 }} />)}
         </div>
-        {[1,2,3,4,5].map(i => <div key={i} className="skeleton" style={{ height: 80, marginBottom: 12, borderRadius: 12 }} />)}
+        {[1,2,3,4,5].map(i => <div key={i} className="skeleton" style={{ height: 80, marginBottom: 12, borderRadius: 8 }} />)}
       </main>
     </div>
   );
@@ -59,78 +59,75 @@ export default function ManagerPage() {
   const { teamAverages, memberSummaries, summary } = data;
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#09090b" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-main)" }}>
       <Sidebar developers={developers} activeDeveloperId={developers[0]?.developer_id ?? ""} />
-      <main style={{ marginLeft: 260, flex: 1, padding: "32px 40px" }}>
+      <main style={{ marginLeft: 260, flex: 1, padding: "40px", maxWidth: "calc(100vw - 260px)" }}>
 
         {/* Header */}
-        <div style={{ marginBottom: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
             <div style={{
-              width: 40, height: 40, borderRadius: 10,
-              background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+              width: 48, height: 48, borderRadius: 8,
+              background: "var(--brand-primary)",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <Users size={18} color="white" />
+              <Users size={20} color="white" />
             </div>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 800, color: "#f4f4f5", letterSpacing: "-0.4px" }}>
+              <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.5px" }}>
                 Manager Summary
               </h1>
-              <p style={{ fontSize: 13, color: "#52525b" }}>Team-level metrics · bottleneck overview · RBAC view</p>
+              <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: 4 }}>
+                Team-level metrics · Bottleneck overview · Role-based access view
+              </p>
             </div>
           </div>
         </div>
 
         {/* Team health overview */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 36 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 32 }}>
           {[
-            { label: "Total Members",   value: summary.totalMembers, color: "#8b5cf6", Icon: Users         },
-            { label: "Critical Issues", value: summary.criticalCount, color: "#f43f5e", Icon: AlertTriangle },
-            { label: "Warnings",        value: summary.warningCount,  color: "#f59e0b", Icon: Zap           },
-            { label: "Healthy",         value: summary.healthyCount,  color: "#10b981", Icon: CheckCircle   },
-          ].map(({ label, value, color, Icon }) => (
-            <div key={label} style={{
-              background: "#141418", border: "1px solid rgba(255,255,255,0.07)",
-              borderRadius: 14, padding: "20px 22px",
-              display: "flex", alignItems: "center", gap: 16,
+            { label: "Total Members",   value: summary.totalMembers, color: "var(--text-main)", bg: "var(--bg-subtle)", border: "var(--border-color)", Icon: Users         },
+            { label: "Critical Issues", value: summary.criticalCount, color: "var(--status-critical-fg)", bg: "var(--status-critical-bg)", border: "var(--status-critical-border)", Icon: AlertTriangle },
+            { label: "Warnings",        value: summary.warningCount,  color: "var(--status-warning-fg)", bg: "var(--status-warning-bg)", border: "var(--status-warning-border)", Icon: Zap           },
+            { label: "Healthy",         value: summary.healthyCount,  color: "var(--status-healthy-fg)", bg: "var(--status-healthy-bg)", border: "var(--status-healthy-border)", Icon: CheckCircle   },
+          ].map(({ label, value, color, bg, border, Icon }) => (
+            <div key={label} className="professional-card" style={{
+              padding: "24px", display: "flex", alignItems: "center", gap: 16,
             }}>
               <div style={{
-                width: 44, height: 44, borderRadius: 12,
-                background: `${color}15`, border: `1px solid ${color}30`,
+                width: 48, height: 48, borderRadius: 8,
+                background: bg, border: `1px solid ${border}`,
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <Icon size={20} color={color} />
               </div>
               <div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: "#f4f4f5", fontFamily: "'JetBrains Mono', monospace" }}>{value}</div>
-                <div style={{ fontSize: 12, color: "#52525b", fontWeight: 600 }}>{label}</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: "var(--text-main)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 500, marginTop: 6 }}>{label}</div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Team averages */}
-        <div style={{
-          background: "#141418", border: "1px solid rgba(255,255,255,0.07)",
-          borderRadius: 16, padding: 24, marginBottom: 28,
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
-            <BarChart2 size={16} color="#8b5cf6" />
-            <h2 style={{ fontSize: 15, fontWeight: 700, color: "#f4f4f5" }}>Team Averages (30-day)</h2>
+        <div className="professional-card" style={{ padding: 32, marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+            <BarChart2 size={18} color="var(--text-muted)" />
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-main)" }}>Team Averages (30-day)</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 24 }}>
             {[
-              { label: "Lead Time",    value: teamAverages.leadTime,        unit: "h",   color: "#8b5cf6" },
-              { label: "Cycle Time",   value: teamAverages.cycleTime,       unit: "h",   color: "#3b82f6" },
-              { label: "PR Throughput",value: teamAverages.prThroughput,    unit: " PRs",color: "#06b6d4" },
-              { label: "Deploy Freq.", value: teamAverages.deployFrequency, unit: "/30d",color: "#10b981" },
-              { label: "Bug Rate",     value: teamAverages.bugRate,         unit: "%",   color: "#f43f5e" },
+              { label: "Lead Time",    value: teamAverages.leadTime,        unit: "h",   color: "var(--chart-lead)" },
+              { label: "Cycle Time",   value: teamAverages.cycleTime,       unit: "h",   color: "var(--chart-cycle)" },
+              { label: "PR Throughput",value: teamAverages.prThroughput,    unit: " PRs",color: "var(--chart-pr)" },
+              { label: "Deploy Freq.", value: teamAverages.deployFrequency, unit: "/30d",color: "var(--chart-deploy)" },
+              { label: "Bug Rate",     value: teamAverages.bugRate,         unit: "%",   color: "var(--chart-bug)" },
             ].map(m => (
               <div key={m.label}>
-                <div style={{ fontSize: 11, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 6 }}>{m.label}</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: m.color, fontFamily: "'JetBrains Mono', monospace" }}>
-                  {m.value}{m.unit}
+                <div style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500, marginBottom: 8 }}>{m.label}</div>
+                <div style={{ fontSize: 24, fontWeight: 600, color: "var(--text-main)", fontFamily: "'JetBrains Mono', monospace" }}>
+                  {m.value}<span style={{ fontSize: 16, color: "var(--text-subtle)", marginLeft: 2 }}>{m.unit}</span>
                 </div>
               </div>
             ))}
@@ -138,20 +135,18 @@ export default function ManagerPage() {
         </div>
 
         {/* Member table */}
-        <div style={{
-          background: "#141418", border: "1px solid rgba(255,255,255,0.07)",
-          borderRadius: 16, overflow: "hidden",
-        }}>
-          <div style={{ padding: "18px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <h2 style={{ fontSize: 15, fontWeight: 700, color: "#f4f4f5" }}>Developer Breakdown</h2>
-            <p style={{ fontSize: 12, color: "#52525b", marginTop: 2 }}>Click any developer to view their full dashboard</p>
+        <div className="professional-card" style={{ overflow: "hidden" }}>
+          <div style={{ padding: "24px", borderBottom: "1px solid var(--border-color)", backgroundColor: "var(--bg-subtle)" }}>
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-main)" }}>Developer Breakdown</h2>
+            <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 4 }}>Click any developer to view their full dashboard</p>
           </div>
 
           {/* Table header */}
           <div style={{
             display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr 2fr",
-            padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.05)",
-            fontSize: 11, fontWeight: 600, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.06em",
+            padding: "16px 24px", borderBottom: "1px solid var(--border-color)",
+            fontSize: 12, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em",
+            backgroundColor: "var(--bg-card)",
           }}>
             {["Developer", "Lead Time", "Cycle Time", "PRs", "Deploys", "Bug Rate", "Top Insight"].map(h => (
               <div key={h}>{h}</div>
@@ -164,30 +159,28 @@ export default function ManagerPage() {
             return (
               <Link key={member.developer.developer_id} href={`/dashboard/${member.developer.developer_id}`} style={{ textDecoration: "none" }}>
                 <div
-                  className="fade-in-up"
                   style={{
                     display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr 2fr",
                     padding: "16px 24px", alignItems: "center",
-                    borderBottom: i < memberSummaries.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
-                    cursor: "pointer", transition: "background 0.15s",
-                    animationDelay: `${i * 60}ms`,
+                    borderBottom: i < memberSummaries.length - 1 ? "1px solid var(--border-color)" : "none",
+                    backgroundColor: "var(--bg-card)", cursor: "pointer", transition: "background-color 0.15s",
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--bg-subtle)")}
+                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--bg-card)")}
                 >
                   {/* Developer */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <div style={{
-                      width: 34, height: 34, borderRadius: 8, flexShrink: 0,
-                      background: "linear-gradient(135deg, #8b5cf680, #3b82f680)",
+                      width: 36, height: 36, borderRadius: 6, flexShrink: 0,
+                      background: "var(--bg-subtle)", border: "1px solid var(--border-color)",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 12, fontWeight: 700, color: "white",
+                      fontSize: 12, fontWeight: 600, color: "var(--text-main)",
                     }}>
                       {member.developer.avatar}
                     </div>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#f4f4f5" }}>{member.developer.name}</div>
-                      <div style={{ fontSize: 11, color: "#52525b" }}>{member.developer.team_name} · {member.developer.role}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-main)" }}>{member.developer.name}</div>
+                      <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>{member.developer.team_name} · {member.developer.role}</div>
                     </div>
                   </div>
 
@@ -199,20 +192,18 @@ export default function ManagerPage() {
                     { v: member.metrics.deployFrequency, u: ""    },
                     { v: member.metrics.bugRate,         u: "%"   },
                   ].map((m, mi) => (
-                    <div key={mi} style={{ fontSize: 13, fontWeight: 600, color: "#e4e4e7", fontFamily: "'JetBrains Mono', monospace" }}>
-                      {m.v}{m.u}
+                    <div key={mi} style={{ fontSize: 14, fontWeight: 500, color: "var(--text-main)", fontFamily: "'JetBrains Mono', monospace" }}>
+                      {m.v}<span style={{ fontSize: 12, color: "var(--text-subtle)", marginLeft: 2 }}>{m.u}</span>
                     </div>
                   ))}
 
                   {/* Top insight */}
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{
-                      display: "inline-flex", alignItems: "center", gap: 6,
-                      padding: "4px 10px", borderRadius: 8, fontSize: 12, fontWeight: 600,
-                      background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}`,
-                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200,
+                    <div className={`tag severity-${member.health}`} style={{
+                      padding: "6px 12px", borderRadius: 6,
+                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 220,
                     }}>
-                      <HIcon size={12} />
+                      <HIcon size={14} />
                       {member.topInsight?.title ?? "Healthy"}
                     </div>
                   </div>

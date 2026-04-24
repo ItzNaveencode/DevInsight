@@ -5,7 +5,6 @@ import {
   LayoutDashboard, TrendingUp, Users, Lightbulb,
   Zap, Activity, ChevronRight,
 } from "lucide-react";
-import clsx from "clsx";
 
 interface SidebarProps {
   developers: { developer_id: string; name: string; team_name: string; avatar: string; role: string }[];
@@ -26,8 +25,8 @@ export default function Sidebar({ developers, activeDeveloperId }: SidebarProps)
       style={{
         width: 260,
         minHeight: "100vh",
-        background: "#0d0d10",
-        borderRight: "1px solid rgba(255,255,255,0.06)",
+        background: "var(--bg-sidebar)",
+        borderRight: "1px solid var(--border-color)",
         display: "flex",
         flexDirection: "column",
         padding: "0",
@@ -39,32 +38,48 @@ export default function Sidebar({ developers, activeDeveloperId }: SidebarProps)
       }}
     >
       {/* Logo */}
-      <div style={{ padding: "24px 20px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <div style={{ padding: "24px 20px 20px", borderBottom: "1px solid var(--border-color)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
+            width: 32, height: 32, borderRadius: 6,
+            background: "var(--brand-primary)",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            <Zap size={18} color="white" fill="white" />
+            <Activity size={18} color="white" />
           </div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#f4f4f5", letterSpacing: "-0.3px" }}>DevInsight</div>
-            <div style={{ fontSize: 11, color: "#71717a", fontWeight: 500 }}>Pro · Engineering Intelligence</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text-main)", letterSpacing: "-0.3px" }}>DevInsight</div>
+            <div style={{ fontSize: 11, color: "var(--text-subtle)", fontWeight: 500 }}>Professional Edition</div>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
       <nav style={{ padding: "16px 12px 8px" }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.08em", paddingLeft: 8, marginBottom: 6 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-subtle)", textTransform: "uppercase", letterSpacing: "0.05em", paddingLeft: 8, marginBottom: 6 }}>
           Navigation
         </div>
         {NAV_ITEMS.map(({ label, icon: Icon, href }) => {
           const path = href(activeDeveloperId);
           const isActive = pathname === path || pathname.startsWith(path.split("?")[0]);
           return (
-            <Link key={label} href={path} className={clsx("nav-item", isActive && "active")}>
+            <Link 
+              key={label} 
+              href={path} 
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                color: isActive ? "var(--brand-primary)" : "var(--text-muted)",
+                background: isActive ? "var(--brand-bg)" : "transparent",
+                fontWeight: isActive ? 600 : 500,
+                fontSize: "14px",
+                textDecoration: "none",
+                marginBottom: "4px"
+              }}
+            >
               <Icon size={16} />
               <span>{label}</span>
               {isActive && <ChevronRight size={14} style={{ marginLeft: "auto" }} />}
@@ -75,7 +90,7 @@ export default function Sidebar({ developers, activeDeveloperId }: SidebarProps)
 
       {/* Developers */}
       <div style={{ padding: "8px 12px", flex: 1, overflowY: "auto" }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.08em", paddingLeft: 8, marginBottom: 8 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-subtle)", textTransform: "uppercase", letterSpacing: "0.05em", paddingLeft: 8, marginBottom: 8 }}>
           Developers
         </div>
         {developers.map((dev) => {
@@ -88,29 +103,26 @@ export default function Sidebar({ developers, activeDeveloperId }: SidebarProps)
               <div
                 style={{
                   display: "flex", alignItems: "center", gap: 10, padding: "8px 10px",
-                  borderRadius: 10, marginBottom: 2,
-                  background: isActive ? "rgba(139,92,246,0.1)" : "transparent",
-                  border: isActive ? "1px solid rgba(139,92,246,0.2)" : "1px solid transparent",
+                  borderRadius: 6, marginBottom: 2,
+                  background: isActive ? "var(--brand-bg)" : "transparent",
                   cursor: "pointer", transition: "all 0.15s",
                 }}
               >
                 <div style={{
-                  width: 32, height: 32, borderRadius: 8,
-                  background: isActive
-                    ? "linear-gradient(135deg, #8b5cf6, #3b82f6)"
-                    : "rgba(255,255,255,0.07)",
+                  width: 30, height: 30, borderRadius: 6,
+                  background: isActive ? "var(--brand-primary)" : "var(--bg-subtle)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 11, fontWeight: 700,
-                  color: isActive ? "white" : "#a1a1aa",
+                  fontSize: 11, fontWeight: 600,
+                  color: isActive ? "white" : "var(--text-muted)",
                   flexShrink: 0,
                 }}>
                   {dev.avatar}
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: isActive ? "#a78bfa" : "#e4e4e7", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <div style={{ fontSize: 13, fontWeight: isActive ? 600 : 500, color: isActive ? "var(--brand-primary)" : "var(--text-main)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {dev.name}
                   </div>
-                  <div style={{ fontSize: 11, color: "#71717a" }}>{dev.team_name}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-subtle)" }}>{dev.team_name}</div>
                 </div>
               </div>
             </Link>
@@ -119,13 +131,13 @@ export default function Sidebar({ developers, activeDeveloperId }: SidebarProps)
       </div>
 
       {/* Footer */}
-      <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+      <div style={{ padding: "16px 20px", borderTop: "1px solid var(--border-color)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <Activity size={12} color="#10b981" />
-          <span style={{ fontSize: 11, color: "#52525b" }}>All systems operational</span>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--status-healthy-fg)" }} />
+          <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>System Operational</span>
         </div>
-        <div style={{ fontSize: 10, color: "#3f3f46", marginTop: 4 }}>
-          Last synced: just now · 30-day window
+        <div style={{ fontSize: 11, color: "var(--text-subtle)", marginTop: 4 }}>
+          Last synced: Just now
         </div>
       </div>
     </aside>
